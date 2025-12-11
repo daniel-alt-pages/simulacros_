@@ -1,0 +1,507 @@
+﻿Informe Técnico Integral: Marco de Referencia, Estructura Evaluativa y Temarios del Examen de Estado Saber 11° (Vigencia 2026)
+1. Fundamentación Institucional y Marco Legal del Sistema de Evaluación
+El presente informe técnico despliega un análisis exhaustivo de la arquitectura evaluativa del Examen de Estado de la Educación Media, Saber 11°, programado para el calendario 2026. Este documento se erige sobre la base de la documentación oficial proporcionada por el Instituto Colombiano para la Evaluación de la Educación (Icfes), específicamente la Guía de orientación Saber 11° 2026-1 Calendario B.1 El propósito central es desglosar, con un nivel de detalle granular, los componentes que integran el marco de referencia, los temarios implícitos en las competencias evaluadas y la estructura operativa que permite la clasificación de los estudiantes en niveles de desempeño.
+La evaluación estandarizada en Colombia no constituye un ejercicio aislado de medición, sino que responde a un imperativo legal y social definido por la Ley 1324 de 2009. Esta normativa confiere al Icfes la misión crítica de evaluar, mediante exámenes externos estandarizados, la formación ofrecida en los distintos niveles del servicio educativo.1 Es fundamental comprender que el Ministerio de Educación Nacional (MEN) es el ente rector que define "qué" se debe evaluar, mientras que el Icfes operacionaliza "cómo" se evalúa. Esta distinción es crucial para entender la alineación entre los Estándares Básicos de Competencias (EBC) y la estructura de la prueba.
+El Decreto 869 de 2010 establece los objetivos rectores del examen, los cuales trascienden la simple asignación de un puntaje numérico para el ingreso a la educación superior. El examen tiene la responsabilidad de comprobar el grado de desarrollo de las competencias de los estudiantes al finalizar el grado undécimo, proporcionando elementos para la autoevaluación y el desarrollo del proyecto de vida del estudiante. Simultáneamente, opera como un instrumento de monitoreo de la calidad educativa, permitiendo a los establecimientos educativos reorientar sus prácticas pedagógicas y sirviendo como base para el diseño de políticas educativas nacionales y territoriales.1
+En el contexto del Sistema Nacional de Evaluación Externa Estandarizada (SNEE), el examen Saber 11° juega un papel articulador, permitiendo la comparabilidad de resultados entre distintos niveles educativos. Esto se logra gracias a que diferentes exámenes del sistema evalúan las mismas competencias en áreas transversales, facilitando el seguimiento de la trayectoria educativa y el cálculo de indicadores de valor agregado.1
+________________
+2. Metodología de Diseño y Niveles de Desempeño: El Diseño Centrado en Evidencias (DCE)
+Para abordar la solicitud de "temarios detallados por niveles de desempeño", es imperativo analizar la metodología subyacente que estructura el examen: el Diseño Centrado en Evidencias (DCE). A diferencia de los modelos evaluativos tradicionales basados en listas taxativas de contenidos temáticos a memorizar, el Saber 11° se fundamenta en la verificación de competencias a través de evidencias observables.
+El DCE se estructura jerárquicamente en tres niveles que permiten inferir el nivel de desempeño del evaluado:
+1. Competencias: Representan el nivel más alto de la jerarquía. Se definen como las habilidades necesarias para aplicar los conocimientos en diferentes contextos. La evaluación no busca verificar si el estudiante "posee" un conocimiento inerte, sino si es capaz de utilizarlo para resolver problemas en situaciones cotidianas o académicas.1
+2. Afirmaciones: Constituyen el segundo nivel de desglose. Son enunciados generales sobre lo que se espera que el estudiante sea capaz de hacer dentro de un área de conocimiento específica. Una competencia se desagrega en múltiples afirmaciones que cubren sus distintas facetas.1
+3. Evidencias: Representan el nivel más granular y observable. Son las conductas, productos o justificaciones específicas que permiten inferir que el estudiante ha alcanzado la afirmación correspondiente. Las preguntas de selección múltiple se diseñan meticulosamente para capturar estas evidencias.1
+2.1. La Construcción de los Niveles de Desempeño (1, 2, 3 y 4)
+Aunque la guía técnica 2026 no presenta descripciones textuales explícitas para los Niveles 1, 2, 3 y 4 en todas las áreas (con excepción de Inglés, que utiliza el Marco Común Europeo), la estructura de competencias y contenidos permite reconstruir la progresión de complejidad que define estos niveles:
+* Hacia el Nivel 1 y 2 (Desempeño Básico): Estos niveles se asocian con las competencias de "Interpretación y Representación" (en Matemáticas) o "Identificación de información local" (en Lectura Crítica). Se caracterizan por el manejo de Contenidos Genéricos, es decir, aquellos elementos fundamentales necesarios para la interacción ciudadana básica (lectura literal, operaciones aritméticas simples, reconocimiento de derechos constitucionales básicos).1
+* Hacia el Nivel 3 y 4 (Desempeño Superior): Estos niveles requieren el dominio de las competencias de "Argumentación", "Formulación y Ejecución" y "Pensamiento Sistémico". Implican el uso de Contenidos No Genéricos (específicos del quehacer académico, como cálculo, química estequiométrica o filosofía) y la capacidad de evaluar hipótesis, diseñar estrategias complejas y realizar juicios críticos sobre textos y contextos.1
+A lo largo de este informe, se detallará cómo cada prueba discrimina entre estas habilidades, constituyendo así el "temario" diferenciado por niveles de complejidad.
+________________
+3. Especificaciones Operativas y Estructura Diferencial del Examen
+El examen Saber 11° se caracteriza por un enfoque diferencial e inclusivo, adaptando su estructura operativa a las características de la población evaluada. La aplicación estándar se divide en dos sesiones, cada una con una duración máxima de 4 horas y 30 minutos.1
+3.1. Estructura del Cuadernillo Estándar
+Este instrumento se aplica a la mayoría de la población estudiantil que no reporta discapacidades. Su diseño busca cubrir la totalidad de las áreas nucleares y recolectar información contextual.
+Tabla 1. Distribución de Preguntas - Cuadernillo Estándar
+Prueba / Componente
+	Preguntas Sesión 1
+	Preguntas Sesión 2
+	Total Preguntas
+	Matemáticas
+	25
+	25
+	50
+	Lectura Crítica
+	41
+	-
+	41
+	Sociales y Ciudadanas
+	25
+	25
+	50
+	Ciencias Naturales
+	29
+	29
+	58
+	Inglés
+	-
+	55
+	55
+	Cuestionario Socioeconómico
+	11
+	13
+	24
+	Cuestionario Clima Escolar
+	12
+	12
+	24
+	Total Global
+	143
+	159
+	302
+	Fuente: Elaboración propia basada en la Tabla 1 de la Guía de Orientación Saber 11°.1
+Es relevante destacar que áreas críticas como Matemáticas, Sociales y Ciencias Naturales se evalúan en ambas sesiones para evitar la fatiga cognitiva concentrada y permitir una evaluación más amplia del dominio.1
+3.2. Adaptaciones para Comunidades Étnicas
+Reconociendo la diversidad lingüística y cultural del país, el Icfes ofrece cuadernillos adaptados para miembros de comunidades indígenas o grupos étnicos. La Resolución 675 de 2019 permite a estos estudiantes decidir si presentan o no la prueba de Inglés, considerando si el castellano es su segunda lengua.1
+Tabla 2. Estructura para Grupos Étnicos (Sin Inglés)
+Prueba / Componente
+	Preguntas Sesión 1
+	Preguntas Sesión 2
+	Total Preguntas
+	Matemáticas
+	25
+	25
+	50
+	Lectura Crítica
+	41
+	-
+	41
+	Sociales y Ciudadanas
+	25
+	25
+	50
+	Ciencias Naturales
+	29
+	29
+	58
+	Inglés
+	No Aplica
+	No Aplica
+	0
+	Cuestionario Socioeconómico
+	11
+	13
+	24
+	Cuestionario Clima Escolar
+	12
+	12
+	24
+	Total Global
+	143
+	104
+	247
+	Fuente: Elaboración propia basada en la Tabla 2 de la Guía de Orientación Saber 11°.1
+Si el estudiante étnico opta por presentar la prueba de inglés, la estructura es idéntica a la del cuadernillo estándar (Tabla 3 de la Guía).1
+3.3. Ajustes Razonables para Población con Discapacidad
+El examen incorpora ajustes razonables significativos para garantizar la equidad en la evaluación. Estos ajustes no solo implican cambios en el formato (Braille, LSC), sino modificaciones sustanciales en la longitud de la prueba para compensar los tiempos de procesamiento, manteniendo la validez del instrumento.
+3.3.1. Discapacidad Cognitiva o Visual
+Para esta población, se ofrece un cuadernillo reducido que concentra la evaluación en las evidencias más representativas, disminuyendo la carga de lectura y procesamiento.
+Tabla 3. Estructura con Ajustes Razonables (Cognitiva/Visual - Sin Inglés)
+Prueba / Componente
+	Preguntas Sesión 1
+	Preguntas Sesión 2
+	Total Preguntas
+	Matemáticas
+	18
+	20
+	38
+	Lectura Crítica
+	28
+	-
+	28
+	Sociales y Ciudadanas
+	18
+	16
+	34
+	Ciencias Naturales
+	22
+	20
+	42
+	Cuestionario Socioeconómico
+	-
+	24
+	24
+	Total Global
+	86
+	80
+	166
+	Fuente: Elaboración propia basada en la Tabla 4 de la Guía de Orientación Saber 11°.1
+Adicionalmente, las personas con discapacidad visual reciben un Kit Tiflológico (ábaco, pizarra Braille, punzón) y un Kit de Geometría adaptado, herramientas esenciales para la resolución de las preguntas de Matemáticas y Ciencias.1
+3.3.2. Discapacidad Auditiva
+La población sorda usuaria de Lengua de Señas Colombiana (LSC) presenta el examen en modalidad electrónica. Las preguntas son traducidas a LSC mediante videos, eliminando la barrera del español escrito como segunda lengua.
+Tabla 4. Estructura para Usuarios de LSC (Sin Inglés)
+Prueba / Componente
+	Preguntas Sesión 1
+	Preguntas Sesión 2
+	Total Preguntas
+	Matemáticas
+	18
+	20
+	38
+	Lectura Crítica
+	-
+	28
+	28
+	Sociales y Ciudadanas
+	34
+	-
+	34
+	Ciencias Naturales
+	-
+	42
+	42
+	Cuestionario Socioeconómico
+	11
+	13
+	24
+	Total Global
+	83
+	83
+	166
+	Fuente: Elaboración propia basada en la Tabla 7 de la Guía de Orientación Saber 11°.1
+Es notable que, para esta población, la distribución de sesiones cambia drásticamente, agrupando áreas completas en una sola sesión para mantener la coherencia lingüística del intérprete virtual.1
+________________
+4. Temario Detallado y Análisis de la Prueba de Matemáticas
+La prueba de Matemáticas evalúa las competencias para enfrentar situaciones que pueden resolverse con herramientas matemáticas. El temario se divide en tres categorías curriculares (Estadística, Geometría, Álgebra y Cálculo) y dos tipos de contenidos: Genéricos y No Genéricos. Esta distinción es la clave para entender los niveles de desempeño.
+4.1. Competencias y Evidencias: La Escalera del Desempeño
+4.1.1. Interpretación y Representación (34% de la Prueba - Nivel Básico/Medio)
+Esta competencia es la puerta de entrada al desempeño. Evalúa la capacidad de comprender y transformar información. Un estudiante en Nivel 1 o 2 debe demostrar dominio en estas evidencias.
+* Afirmación 1: Comprende y transforma la información cuantitativa y esquemática.
+   * Evidencia 1.1: Da cuenta de las características básicas de la información presentada en series, gráficas, tablas y esquemas. Esto implica lectura directa de datos (ej. extraer un valor de una tabla).
+   * Evidencia 1.2: Transforma la representación de una o más piezas de información. Implica habilidades de traducción semiótica, como convertir una tabla de frecuencias en un gráfico de barras o viceversa.1
+4.1.2. Formulación y Ejecución (43% de la Prueba - Nivel Medio/Alto)
+Constituye el núcleo de la operatividad matemática. Discriminante principal para el Nivel 3.
+* Afirmación 2: Plantea e implementa estrategias que lleven a soluciones adecuadas.
+   * Evidencia 2.1: Diseña planes para la solución de problemas. Requiere planificación cognitiva y selección de heurísticas.
+   * Evidencia 2.2: Ejecuta un plan de solución. Verifica la competencia procedimental y algorítmica (cálculo correcto).
+   * Evidencia 2.3: Resuelve un problema que involucra información cuantitativa. Integra el diseño y la ejecución en contextos diversos.1
+4.1.3. Argumentación (23% de la Prueba - Nivel Superior/4)
+Es la competencia de mayor complejidad, característica de los estudiantes que alcanzan el Nivel 4.
+* Afirmación 3: Valida procedimientos y estrategias matemáticas.
+   * Evidencia 3.1: Plantea afirmaciones que sustentan o refutan una interpretación. Requiere pensamiento crítico matemático.
+   * Evidencia 3.2: Argumenta a favor o en contra de un procedimiento. Implica conocer no solo cómo se hace, sino por qué es válido un método.
+   * Evidencia 3.3: Establece la validez o pertinencia de una solución propuesta.1
+4.2. Temario de Contenidos: Genéricos vs. No Genéricos
+El Icfes clasifica los contenidos para diferenciar qué se exige a "todo ciudadano" (Genérico) frente a lo que se exige en el ámbito académico estricto (No Genérico). El dominio de los contenidos no genéricos es necesario para acceder a los niveles superiores de desempeño.
+Tabla 5. Temario de Estadística
+Tipo de Contenido
+	Temas Específicos
+	Genéricos (Base Nivel 1-2)
+	• Representación de datos (tablas, gráficas).
+
+
+• Intersección, unión y contenencia de conjuntos.
+
+
+• Promedio y rango estadístico.
+
+
+• Conteos simples (suma y multiplicación).
+
+
+• Noción de población, muestra e inferencia.
+	No Genéricos (Nivel 3-4)
+	• Estimación del error.
+
+
+• Varianza, percentiles, mediana y correlación.
+
+
+• Combinaciones y permutaciones (técnicas de conteo complejas).
+	Fuente: Elaboración basada en la Figura 5 de la Guía.1
+Tabla 6. Temario de Geometría
+Tipo de Contenido
+	Temas Específicos
+	Genéricos (Base Nivel 1-2)
+	• Figuras básicas: Triángulos, círculos, paralelogramos, esferas, paralelepípedos, cilindros (y sus medidas).
+
+
+• Paralelismo y ortogonalidad.
+
+
+• Desigualdad triangular.
+
+
+• Sistemas de coordenadas cartesianas (2D).
+	No Genéricos (Nivel 3-4)
+	• Sólidos complejos (pirámides) y polígonos >4 lados.
+
+
+• Congruencia y semejanza.
+
+
+• Teoremas clásicos (Pitágoras, Tales).
+
+
+• Coordenadas polares y tridimensionales.
+
+
+• Transformaciones rígidas (rotación, traslación, homotecia).
+	Fuente: Elaboración basada en la Figura 5 de la Guía.1
+Tabla 7. Temario de Álgebra y Cálculo
+Tipo de Contenido
+	Temas Específicos
+	Genéricos (Base Nivel 1-2)
+	• Números racionales (fracciones, decimales, porcentajes, razones).
+
+
+• Operaciones aritméticas básicas.
+
+
+• Relaciones lineales y afines.
+
+
+• Razones de cambio simples (velocidad, tasas de interés).
+	No Genéricos (Nivel 3-4)
+	• Expresiones algebraicas (siempre no genérico).
+
+
+• Funciones: Racionales, trigonométricas, polinomiales, exponenciales, logarítmicas.
+
+
+• Propiedades de funciones (dominio, rango, periodicidad).
+
+
+• Sucesiones y límites.
+	Fuente: Elaboración basada en la Figura 5 de la Guía.1
+Es crucial notar que el álgebra formal se considera un contenido "No Genérico". Por tanto, los problemas cotidianos que requieren formulación algebraica compleja están diseñados para evaluar los niveles más altos de desempeño.1
+________________
+5. Temario Detallado y Análisis de la Prueba de Lectura Crítica
+La prueba de Lectura Crítica evalúa la competencia lectora mediante textos de diversa tipología. No evalúa conocimientos de historia de la literatura o reglas gramaticales de memoria, sino la capacidad de procesar información en tres niveles de profundidad.
+5.1. Competencias y Evidencias: Profundidad de Lectura
+5.1.1. Identificar y ubicar información local (25% - Nivel Básico)
+Corresponde a la lectura literal y superficial. Un estudiante en Nivel 1 se limita a este desempeño.
+* Afirmación 1: Identifica y entiende los contenidos locales.
+   * Evidencia 1.1: Entiende el significado de palabras y expresiones.
+   * Evidencia 1.2: Identifica eventos narrados explícitamente y personajes. Responde a preguntas de "quién", "cuándo", "dónde" que están escritas textualmente en el documento.1
+5.1.2. Relacionar e interpretar información (42% - Nivel Medio)
+Corresponde a la lectura inferencial. El estudiante debe conectar partes del texto. Es el núcleo del Nivel 2 y 3.
+* Afirmación 2: Comprende la articulación global del texto.
+   * Evidencia 2.1: Comprende la estructura formal (función de párrafos o títulos).
+   * Evidencia 2.2: Identifica voces y situaciones (polifonía textual).
+   * Evidencia 2.3: Comprende relaciones entre partes (causa-efecto, oposición).
+   * Evidencia 2.4: Identifica tesis y argumentos (fundamental en textos expositivos).
+   * Evidencia 2.5: Relaciona elementos en textos discontinuos (ej. integrar una gráfica con una nota al pie).1
+5.1.3. Evaluar y reflexionar (33% - Nivel Superior)
+Corresponde a la lectura crítica e intertextual. Define el Nivel 4.
+* Afirmación 3: Reflexiona y evalúa el contenido.
+   * Evidencia 3.1: Establece validez e implicaciones de enunciados.
+   * Evidencia 3.2: Relaciona el texto con otros textos o marcos culturales (intertextualidad).
+   * Evidencia 3.3: Reconoce contenidos valorativos (sesgos ideológicos).
+   * Evidencia 3.4: Reconoce estrategias discursivas (ironía, sarcasmo).
+   * Evidencia 3.5: Contextualiza la información.1
+5.2. Temario de Tipologías Textuales
+El "temario" de lectura se define por los tipos de textos que el estudiante debe ser capaz de decodificar.
+Tabla 8. Clasificación de Textos y Distribución
+Formato
+	Tipo de Texto
+	Ejemplos (Temario)
+	% Aprox.
+	Continuos
+	Literarios
+	Novela, cuento, poesía, canción, dramaturgia.
+	24%
+	
+
+	Informativos (Filosóficos)
+	Ensayo filosófico, fragmentos de tratados.
+	30%
+	
+
+	Informativos (No Filosóficos)
+	Columna de opinión, crónica, ensayo académico.
+	30%
+	Discontinuos
+	Literarios
+	Caricatura, cómic.
+	8%
+	
+
+	Informativos
+	Etiqueta, infografía, tabla, diagrama, aviso, manual.
+	8%
+	Fuente: Elaboración basada en las Tablas 21 y 22 de la Guía.1
+Es importante destacar la presencia de textos filosóficos. Aunque no se exige conocimiento previo de autores, la familiaridad con conceptos como "epistemología", "ética" o "ontología" y la estructura argumentativa densa es necesaria para navegar estos textos con éxito, lo cual suele separar a los estudiantes de desempeño superior.1
+________________
+6. Temario Detallado y Análisis de la Prueba de Sociales y Ciudadanas
+Esta prueba integra conocimientos de historia, geografía, constitución y competencias ciudadanas. Evalúa la capacidad de analizar problemáticas sociales desde una perspectiva académica y ética (Constitucional), no desde la opinión personal.
+6.1. Competencias y Evidencias
+6.1.1. Pensamiento Social (30% - Fundamentos)
+Evalúa el conocimiento de conceptos básicos y el marco legal. Es la base para los Niveles 1 y 2.
+* Afirmación 1: Comprende modelos conceptuales.
+   * Evidencia 1.1: Usa conceptos básicos (inflación, PIB, democracia, recursos renovables).
+   * Evidencia 1.2: Conoce el Estado Social de Derecho.
+   * Evidencia 1.3: Conoce la organización del Estado (Ramas del poder, organismos de control).
+   * Evidencia 1.4: Conoce mecanismos de participación (Tutela, Derecho de Petición, Voto).1
+* Afirmación 2: Comprende dimensiones espacio-temporales.
+   * Evidencia 2.1: Localiza eventos en el tiempo.
+   * Evidencia 2.2 y 2.3: Relaciona problemáticas sociales con características geográficas.1
+6.1.2. Interpretación y Análisis de Perspectivas (40% - Análisis)
+Evalúa la capacidad de descentración y análisis de fuentes. Fundamental para el Nivel 3.
+* Afirmación 3: Contextualiza y evalúa fuentes.
+   * Evidencia 3.1: Inscribe una fuente primaria en su contexto.
+   * Evidencia 3.2: Evalúa sesgos y limitaciones de una fuente.
+   * Evidencia 3.3: Devela prejuicios en discursos.1
+* Afirmación 4: Comprende perspectivas.
+   * Evidencia 4.1: Compara perspectivas de distintos actores en un conflicto.
+   * Evidencia 4.2: Reconoce la influencia de ideologías y roles sociales.
+   * Evidencia 4.3: Analiza relaciones entre perspectivas y soluciones propuestas.1
+6.1.3. Pensamiento Reflexivo y Sistémico (30% - Sistémico)
+Evalúa la comprensión de la complejidad social. Característica del Nivel 4.
+* Afirmación 5: Evalúa usos de las ciencias sociales.
+   * Evidencia 5.1: Analiza modelos conceptuales (ej. neoliberalismo vs. proteccionismo) y sus efectos.
+* Afirmación 6: Comprende dimensiones sistémicas.
+   * Evidencia 6.1 y 6.2: Establece relaciones entre dimensiones (económica, política, ambiental) y analiza los efectos colaterales de una intervención.1
+________________
+7. Temario Detallado y Análisis de la Prueba de Ciencias Naturales
+Esta prueba evalúa Biología, Física, Química y el componente Ciencia, Tecnología y Sociedad (CTS). Se enfoca en la capacidad de explicar fenómenos e indagar científicamente.
+7.1. Competencias y Evidencias
+7.1.1. Uso Comprensivo del Conocimiento Científico (30%)
+Asociación conceptual. Predominante en Niveles 1 y 2.
+* Afirmación 4: Asocia fenómenos con conceptos.
+   * Evidencias: Relacionar circuitos (serie/paralelo) con voltaje; relacionar tipos de energía; establecer relaciones entre fenómenos biológicos y el entorno; diferenciar tipos de reacciones químicas y conservación de masa.1
+* Afirmación 5: Identifica características de fenómenos.
+   * Evidencias: Identificar variables de ondas, transformaciones de energía, tipos de fuerzas, procesos ecosistémicos, estructura de la materia.1
+7.1.2. Explicación de Fenómenos (30%)
+Construcción de modelos explicativos. Nivel 3.
+* Afirmación 1: Analiza potencial de recursos.
+   * Evidencias: Salud pública, efectos de la explotación de recursos.
+* Afirmación 2: Explica fenómenos basado en principios.
+   * Evidencias: Justificar diferencias entre compuestos y mezclas; explicar gases ideales y cambios de fase; explicar cinemática y dinámica newtoniana; analizar dinámica de organismos y ecosistemas.1
+* Afirmación 3: Modela fenómenos.
+   * Evidencias: Uso de modelos físicos, químicos y biológicos para predecir comportamientos.1
+7.1.3. Indagación (40%)
+Metodología científica. Crucial para los Niveles 3 y 4.
+* Afirmación 6: Comprende la investigación.
+   * Evidencias: Identificar preguntas de investigación y la importancia de la evidencia.
+* Afirmación 7: Deriva conclusiones.
+   * Evidencias: Comunicar resultados y evaluar suficiencia de datos.
+* Afirmación 8: Observa y relaciona patrones.
+   * Evidencias: Interpretar gráficas complejas, representar datos.
+* Afirmación 9: Procedimientos.
+   * Evidencias: Diseñar experimentos, controlar variables, seleccionar instrumentos.1
+7.2. Temario de Contenidos (Componentes)
+Tabla 9. Temario de Ciencias Naturales
+Componente
+	Temas Clave (Syllabus)
+	Biológico
+	• Homeostasis en seres vivos.
+
+
+• Herencia y reproducción.
+
+
+• Relaciones ecológicas.
+
+
+• Evolución y transformación de la vida.
+
+
+• Conservación de energía en sistemas vivos.
+	Físico
+	• Cinemática y Dinámica.
+
+
+• Electromagnetismo.
+
+
+• Energía mecánica y térmica.
+
+
+• Ondas (luz y sonido).
+
+
+• Campo gravitacional.
+	Químico
+	• Cambios químicos y el átomo.
+
+
+• Tipos de enlaces.
+
+
+• Propiedades de la materia.
+
+
+• Estequiometría.
+
+
+• Separación de mezclas, solubilidad y gases ideales.
+	CTS
+	• Globales: Deforestación, efecto invernadero, transgénicos.
+
+
+• Locales: Explotación de recursos, tratamiento de basuras.
+	Fuente: Elaboración basada en la sección de Componentes Evaluados.1
+________________
+8. Temario Detallado y Análisis de la Prueba de Inglés
+La prueba de Inglés es única en su estructura, alineada explícitamente con el Marco Común Europeo de Referencia (MCER). Aquí los niveles de desempeño están claramente definidos: Pre A1, A1, A2, B1.
+8.1. Estructura por Partes y Progresión de Niveles
+La prueba consta de 7 partes, cada una diseñada para evaluar un nivel de competencia específico.
+Tabla 10. Estructura de la Prueba de Inglés
+Parte
+	Formato de Pregunta
+	Habilidad Evaluada
+	Nivel MCER Objetivo
+	Parte 1 (11%)
+	Relación de columnas (Avisos vs. Palabras). Sobran opciones.
+	Conocimiento Lexical (Vocabulario básico).
+	Pre A1 - A1
+	Parte 2 (11%)
+	¿Dónde verías este aviso? (3 opciones).
+	Pragmática (Contexto de uso).
+	A1
+	Parte 3 (11%)
+	Completar conversación (Interlocutor 1 dice X, elige la respuesta).
+	Comunicativa (Funciones del lenguaje).
+	A1 - A2
+	Parte 4 (18%)
+	Texto con espacios (Gramática). 3 opciones por espacio.
+	Conocimiento Gramatical (Estructuras simples).
+	A2
+	Parte 5 (16%)
+	Comprensión de lectura literal. 3 opciones.
+	Lectura Literal (Paráfrasis).
+	A2 - B1
+	Parte 6 (11%)
+	Lectura inferencial compleja. 4 opciones.
+	Lectura Inferencial (Intención, actitud).
+	B1
+	Parte 7 (22%)
+	Texto con espacios (Gramática/Léxico). 4 opciones.
+	Gramatical y Lexical (Estructuras complejas).
+	B1+
+	Fuente: Elaboración basada en Tabla 32 y descripciones de la Guía.1
+Para alcanzar el nivel B1 (el máximo evaluado), el estudiante debe tener éxito en las partes 6 y 7, demostrando capacidad de inferencia y dominio de vocabulario académico y gramática avanzada.1
+________________
+9. Factores Contextuales: Cuestionarios Auxiliares
+El análisis de desempeño no estaría completo sin considerar los factores asociados evaluados en los cuestionarios auxiliares. Aunque no generan puntaje, explican el contexto del desempeño.
+9.1. Cuestionario Socioeconómico
+Evalúa el Índice de Nivel Socioeconómico a través de variables como:
+* Educación de los padres.
+* Bienes (computador, internet, automóvil).
+* Hacinamiento.
+* Capital cultural (libros en el hogar, tiempo de lectura).1
+9.2. Cuestionario de Clima Escolar
+Evalúa la percepción del entorno educativo en cuatro dominios:
+1. Ansiedad escolar: Miedo a evaluaciones, tensión con docentes.
+2. Riesgo escolar: Exposición a violencia, drogas o inseguridad.
+3. Protección individual: Redes de apoyo (familia, amigos).
+4. Protección institucional: Claridad en normas, seguridad percibida.1
+________________
+10. Síntesis y Conclusiones: Hacia una Preparación Estratégica
+El análisis de la Guía de Orientación Saber 11° 2026 permite concluir que los temarios no son listas estáticas, sino matrices de competencias.
+1. Jerarquía Cognitiva: El tránsito del Nivel 1 al 4 es un tránsito desde la literalidad y la operación simple hacia la inferencia, la argumentación y el pensamiento sistémico.
+2. Transversalidad: La lectura crítica es la competencia transversal por excelencia. Su dominio es prerrequisito para el desempeño en Sociales (análisis de fuentes), Ciencias (indagar) y Matemáticas (interpretar problemas).
+3. Inclusión: El sistema garantiza que, independientemente de la discapacidad o pertenencia étnica, se evalúen las mismas competencias nucleares, ajustando los medios de acceso y la carga, pero manteniendo el rigor del estándar.
+Este informe proporciona la base técnica para alinear los planes de estudio institucionales con las demandas reales de la prueba, sustituyendo la memorización por el desarrollo de competencias verificables a través de las evidencias aquí descritas.
+Fuentes citadas
+1. 02-diciembre-guia-de-orientacion-saber-11-2026.pdf
