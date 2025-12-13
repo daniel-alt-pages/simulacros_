@@ -4,12 +4,15 @@ Sistema de análisis educativo basado en React + Vite que procesa datos de minis
 
 ## 🚀 Características
 
-- **Procesamiento Dinámico de CSVs**: Los archivos CSV se procesan directamente en el navegador, eliminando la necesidad de scripts Python y JSONs intermedios
-- **Dashboard de Estudiantes**: Visualización detallada de rendimiento por área
-- **Dashboard de Administrador**: Análisis psicométrico de preguntas y estadísticas globales
-- **Algoritmo NUCLEUS V10**: Scoring no-lineal inspirado en ICFES
-- **Análisis de Rachas**: Detección de patrones de consistencia
-- **Responsive Design**: Interfaz moderna con Tailwind CSS
+- **Procesamiento Dinámico de CSVs**: Los archivos CSV se procesan directamente en el navegador, eliminando la necesidad de scripts Python y JSONs intermedios.
+- **Seguridad Mejorada**:
+  - Protección de herramientas de desarrollo (Consola bloqueada por defecto).
+  - Acceso administrativo seguro mediante combinación de teclas (Alt + S + G) y credenciales hasheadas.
+  - Ofuscación de datos locales para proteger la información del estudiante.
+- **Dashboard de Estudiantes**: Visualización detallada de rendimiento por área y análisis de rachas.
+- **Dashboard de Administrador**: Análisis psicométrico de preguntas, estadísticas globales y gestión de bancos de preguntas.
+- **Algoritmo NUCLEUS V10**: Scoring no-lineal inspirado en ICFES.
+- **Responsive Design**: Interfaz moderna con Tailwind CSS adaptable a diferentes dispositivos.
 
 ## 📋 Requisitos Previos
 

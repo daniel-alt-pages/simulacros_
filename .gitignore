@@ -9,16 +9,9 @@ lerna-debug.log*
 
 # Dependencies
 node_modules
-
-# Build outputs
 dist
 dist-ssr
 *.local
-
-# Environment variables
-.env
-.env.local
-.env.production
 
 # Editor directories and files
 .vscode/*
@@ -26,29 +19,12 @@ dist-ssr
 .idea
 .DS_Store
 *.suo
-*.ntvs*
+*.ntvs
 *.njsproj
 *.sln
 *.sw?
 
-# Python artifacts (legacy - no longer needed)
-*.pyc
-__pycache__/
-*.py[cod]
-*$py.class
-.Python
-
-# Generated JSON (optional - can be regenerated from CSVs)
-# Uncomment if you want to exclude the JSON backup
-# public/NUCLEUS_WEB_DB.json
-
-# OS files
-Thumbs.db
-.DS_Store
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
+# Environment variables
+.env
+.env.*
+!.env.example

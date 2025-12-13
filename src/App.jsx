@@ -86,20 +86,44 @@ export default function App() {
   const [error, setError] = useState('');
   const [selectedQuestionStats, setSelectedQuestionStats] = useState(null); // Modal interaction state
 
+  // --- SECURITY: Hashed Credentials & Data Obfuscation ---
+  const ADMIN_HASH = "c827788d91e857a49448610e48cea2af58ad92d4eda9a8f06193e8763e48db16"; // SHA-256 of 1045671402
+
+  const simpleEncrypt = (text) => {
+    return btoa(text.split('').map((c, i) => String.fromCharCode(c.charCodeAt(0) ^ (i % 5))).join(''));
+  };
+
+  /* eslint-disable no-unused-vars */
+  const simpleDecrypt = (encoded) => {
+    try {
+      return atob(encoded).split('').map((c, i) => String.fromCharCode(c.charCodeAt(0) ^ (i % 5))).join('');
+    } catch (e) { return null; }
+  };
+  /* eslint-enable no-unused-vars */
+
   // Lazy Initialization for Auth State
   const [user, setUser] = useState(() => {
     try {
       const storedUser = localStorage.getItem('nucleus_user_react');
       const storedRole = localStorage.getItem('nucleus_role');
-      if (storedUser && storedRole === 'student') return JSON.parse(storedUser);
-      if (storedRole === 'admin') return { name: 'Administrador', role: 'admin' };
+
+      const role = storedRole ? simpleDecrypt(storedRole) : null;
+      let userData = null;
+
+      if (storedUser) {
+        const decryptedUser = simpleDecrypt(storedUser);
+        if (decryptedUser) userData = JSON.parse(decryptedUser);
+      }
+
+      if (userData && role === 'student') return userData;
+      if (role === 'admin') return { name: 'Administrador Maestro', role: 'admin' };
       return null;
     } catch { return null; }
   });
 
   const [view, setView] = useState(() => {
     const role = localStorage.getItem('nucleus_role');
-    const isValidView = Object.values(VALID_VIEWS).includes(role === 'admin' ? 'admin' : 'dashboard');
+    // const isValidView = Object.values(VALID_VIEWS).includes(role === 'admin' ? 'admin' : 'dashboard');
     return (role === 'student' || role === 'admin') ? (role === 'admin' ? 'admin' : 'dashboard') : 'login';
   });
 
@@ -109,6 +133,20 @@ export default function App() {
       .then(realData => {
         console.log('✅ Data loaded in App:', realData);
         setDb(realData);
+
+        // SYNC USER WITH FRESH DATA
+        setUser(currentUser => {
+          if (!currentUser || currentUser.role !== 'student') return currentUser;
+          const freshStudent = realData.students.find(s => s.id === currentUser.id);
+          if (freshStudent) {
+            console.log('🔄 Usuario actualizado con datos frescos de DB');
+            const updatedUser = { ...freshStudent, role: 'student' };
+            // Actualizar localStorage para la próxima vez
+            localStorage.setItem('nucleus_user_react', simpleEncrypt(JSON.stringify(freshStudent)));
+            return updatedUser;
+          }
+          return currentUser;
+        });
       })
       .catch(err => {
         console.error("❌ Error loading data:", err);
@@ -116,13 +154,38 @@ export default function App() {
       });
   }, []);
 
-  const handleLogin = (docInput) => {
+  const handleLogout = () => {
+    localStorage.removeItem('nucleus_user_react');
+    localStorage.removeItem('nucleus_role');
+    setUser(null);
+    setView('login');
+  };
+
+  // FORCE LOGOUT IF STATE IS INVALID (Fix for empty screen on migration)
+  useEffect(() => {
+    if (!user && view !== 'login') {
+      console.warn("⚠️ Detectado estado inconsistente (Vista sin Usuario). Forzando cierre de sesión...");
+      // Wrap in timeout to avoid synchronous state update in effect warning
+      setTimeout(() => {
+        handleLogout();
+      }, 0);
+    }
+  }, [user, view]);
+
+  const handleLogin = async (docInput) => {
     if (!db) return;
 
-    if (docInput === 'admin') {
+    // Verify Admin via Hash
+    const encoder = new TextEncoder();
+    const data = encoder.encode(docInput);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+    if (hashHex === ADMIN_HASH) {
       const adminUser = { name: 'Administrador Maestro', role: 'admin' };
       setUser(adminUser);
-      localStorage.setItem('nucleus_role', 'admin');
+      localStorage.setItem('nucleus_role', simpleEncrypt('admin'));
       setView('admin');
       return;
     }
@@ -130,8 +193,9 @@ export default function App() {
     const student = db.students.find(s => s.id === docInput);
     if (student) {
       setUser({ ...student, role: 'student' });
-      localStorage.setItem('nucleus_user_react', JSON.stringify(student));
-      localStorage.setItem('nucleus_role', 'student');
+      // Obfuscate Storage
+      localStorage.setItem('nucleus_user_react', simpleEncrypt(JSON.stringify(student)));
+      localStorage.setItem('nucleus_role', simpleEncrypt('student'));
       setView('dashboard');
       setError('');
     } else {
@@ -139,12 +203,74 @@ export default function App() {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('nucleus_user_react');
-    localStorage.removeItem('nucleus_role');
-    setUser(null);
-    setView('login');
-  };
+  // --- SECURITY: Lockdown & "God Mode" Unlock (Alt + S + G) ---
+  const [devToolsUnlocked, setDevToolsUnlocked] = useState(false);
+
+  useEffect(() => {
+    // If Admin or explicitly unlocked via secret combo, allow everything
+    if (view === 'admin' || devToolsUnlocked) return;
+
+    const handleContextMenu = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      return false;
+    };
+
+    const handleKeyDown = (e) => {
+      // Prevent F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C, Ctrl+U, Ctrl+S
+      if (
+        e.key === 'F12' ||
+        (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) ||
+        (e.ctrlKey && e.key === 'U') ||
+        (e.ctrlKey && e.key === 'S')
+      ) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }
+    };
+
+    // Use document with capture check to intervene early (window sometimes misses)
+    document.addEventListener('contextmenu', handleContextMenu, true);
+    document.addEventListener('keydown', handleKeyDown, true);
+
+    return () => {
+      document.removeEventListener('contextmenu', handleContextMenu, true);
+      document.removeEventListener('keydown', handleKeyDown, true);
+    };
+  }, [view, devToolsUnlocked]);
+
+  // Secret Combo Listener: Alt + S + G
+  useEffect(() => {
+    let keys = { s: false, g: false, Alt: false };
+
+    const handleDown = (e) => {
+      if (e.key.toLowerCase() === 's') keys.s = true;
+      if (e.key.toLowerCase() === 'g') keys.g = true;
+      if (e.key === 'Alt') keys.Alt = true;
+
+      if (keys.Alt && keys.s && keys.g) {
+        setDevToolsUnlocked(prev => !prev);
+        // alert("🛡️ Security State Toggled"); // Removed alert per user preference for stealth
+        keys = { s: false, g: false, Alt: false }; // reset
+      }
+    };
+
+    const handleUp = (e) => {
+      if (e.key.toLowerCase() === 's') keys.s = false;
+      if (e.key.toLowerCase() === 'g') keys.g = false;
+      if (e.key === 'Alt') keys.Alt = false;
+    };
+
+    window.addEventListener('keydown', handleDown);
+    window.addEventListener('keyup', handleUp);
+    return () => {
+      window.removeEventListener('keydown', handleDown);
+      window.removeEventListener('keyup', handleUp);
+    };
+  }, []);
+
+
 
   // Safe navigation handler to prevent empty screens
   const handleViewChange = (newView) => {
@@ -169,23 +295,32 @@ export default function App() {
     setView(newView);
   };
 
+  // Sidebar State
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true); // Default collapsed for cleaner look
+
+  // ... (handleLogin, handleLogout, handleViewChange remain same)
+
   if (!db && view !== 'login') return (
+    // ... (loading state remains same - condensed for brevity in replacement)
     <div className="h-screen flex items-center justify-center bg-[#0B1121] text-white overflow-hidden relative">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-indigo-900/20 via-[#0B1121] to-black"></div>
+      {/* ... loading content ... */}
       <div className="text-center relative z-10">
-        <div className="relative inline-flex items-center justify-center w-24 h-24 mb-6">
-          <div className="absolute inset-0 bg-indigo-500 rounded-full animate-ping opacity-20"></div>
-          <div className="relative z-10 w-full h-full bg-slate-800/50 backdrop-blur-xl border border-indigo-500/30 rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(99,102,241,0.3)]">
-            <BrainCircuit size={48} className="text-indigo-400" />
-          </div>
-        </div>
         <p className="text-indigo-200 font-medium text-lg tracking-widest uppercase animate-pulse">Iniciando Nucleus Engine...</p>
       </div>
     </div>
   );
 
   return (
-    <div className="min-h-screen font-sans bg-[#0B1121] text-slate-200 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-[#0B1121] to-black overflow-x-hidden">
+    <div
+      onContextMenu={(e) => {
+        if (view !== 'admin' && !devToolsUnlocked) {
+          e.preventDefault();
+          return false;
+        }
+      }}
+      className="min-h-screen font-sans bg-[#0B1121] text-slate-200 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-[#0B1121] to-black overflow-x-hidden"
+    >
 
       {view === 'login' && (
         <LoginView onLogin={handleLogin} error={error} />
@@ -193,9 +328,16 @@ export default function App() {
 
       {view !== 'login' && user && (
         <div className="flex flex-col md:flex-row min-h-screen">
-          <Sidebar user={user} view={view} setView={handleViewChange} handleLogout={handleLogout} />
+          <Sidebar
+            user={user}
+            view={view}
+            setView={handleViewChange}
+            handleLogout={handleLogout}
+            isCollapsed={isSidebarCollapsed}
+            setIsCollapsed={setIsSidebarCollapsed}
+          />
 
-          <main className="flex-1 md:ml-80 p-6 md:p-10 overflow-y-auto relative z-10">
+          <main className={`flex-1 transition-all duration-300 ease-in-out p-6 md:p-10 overflow-y-auto relative z-10 ${isSidebarCollapsed ? 'md:ml-20' : 'md:ml-80'}`}>
             {/* Background Glow effects */}
             <div className="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-[-1]">
               <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[100px]"></div>
@@ -203,7 +345,12 @@ export default function App() {
             </div>
 
             {user.role === 'student' && view === 'dashboard' && (
-              <StudentDashboard user={user} db={db} setView={handleViewChange} />
+              <StudentDashboard
+                user={user}
+                db={db}
+                setView={handleViewChange}
+                onShowQuestionModal={setSelectedQuestionStats}
+              />
             )}
 
             {user.role === 'student' && view === 'planner' && (
@@ -340,7 +487,7 @@ export default function App() {
                                           ...q,
                                           label: q.id,
                                           areaName,
-                                          answer: q.correctAnswer || 'A', // Fallback
+                                          answer: q.correctAnswer || globalStat?.correct_answer || 'A',
                                           global: globalStat || { correct_rate: 0, total_attempts: 0, distractors: {} },
                                           userStatus: q.isCorrect ? 'correct' : 'incorrect',
                                           userSelected: q.value || 'N/A'

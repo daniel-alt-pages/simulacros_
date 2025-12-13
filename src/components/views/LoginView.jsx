@@ -134,22 +134,7 @@ export default function LoginView({ onLogin, error }) {
                     )}
                 </AnimatePresence>
 
-                {/* Quick Access Hint */}
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.9 }}
-                    className="mt-8 p-4 bg-slate-800/50 rounded-xl border border-slate-700"
-                >
-                    <div className="text-xs text-slate-400 font-medium text-center">
-                        <span className="block mb-2 font-bold text-slate-300">Acceso Rápido</span>
-                        <div className="flex items-center justify-center gap-2 flex-wrap">
-                            <code className="px-2 py-1 bg-slate-900 rounded text-indigo-400 font-mono">admin</code>
-                            <span className="text-slate-600">•</span>
-                            <span className="text-slate-500">Panel Administrativo</span>
-                        </div>
-                    </div>
-                </motion.div>
+
 
                 <motion.p
                     initial={{ opacity: 0 }}

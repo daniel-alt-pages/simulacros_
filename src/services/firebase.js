@@ -1,31 +1,36 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore, doc, setDoc, getDoc, collection, addDoc } from "firebase/firestore";
+import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
 
 /**
  * ==========================================
- * 🔥 CONFIGURACIÓN DE FIREBASE
+ * 🔥 CONFIGURACIÓN DE FIREBASE (SEGURA)
  * ==========================================
- * Sigue la guía en 'FIREBASE_SETUP_GUIDE.md' para obtener estos valores.
+ * Las credenciales se cargan desde variables de entorno.
+ * NO MODIFICAR ESTE ARCHIVO CON CREDENCIALES REALES.
  */
 const firebaseConfig = {
-    apiKey: "AIzaSyCjVydFLBVviDSVYJVwT8V_pzJQl38ZsiY",
-    authDomain: "nucleus-analytics-db.firebaseapp.com",
-    projectId: "nucleus-analytics-db",
-    storageBucket: "nucleus-analytics-db.firebasestorage.app",
-    messagingSenderId: "419609486450",
-    appId: "1:419609486450:web:dc302796c25d3ede970eeb"
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+    appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
-// Inicializar Firebase
+// Inicializar Firebase solo si las credenciales existen
 let app;
 let db;
 
 try {
-    app = initializeApp(firebaseConfig);
-    db = getFirestore(app);
-    console.log("🔥 Firebase inicializado correctamente");
+    if (import.meta.env.VITE_FIREBASE_API_KEY) {
+        app = initializeApp(firebaseConfig);
+        db = getFirestore(app);
+        console.log("🔥 Firebase inicializado de forma segura");
+    } else {
+        console.warn("⚠️ Credenciales de Firebase no detectadas en variables de entorno.");
+    }
 } catch (error) {
-    console.error("❌ Error inicializando Firebase. Revisa tu configuración.", error);
+    console.error("❌ Error inicializando Firebase.", error);
 }
 
 /**
@@ -34,7 +39,7 @@ try {
  * @param {object} planData - Objeto con el plan y configuración
  */
 export const saveStudyPlan = async (studentId, planData) => {
-    if (!db) return;
+    if (!db) return false;
     try {
         await setDoc(doc(db, "study_plans", studentId), {
             ...planData,

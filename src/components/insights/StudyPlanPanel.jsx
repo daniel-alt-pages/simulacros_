@@ -6,7 +6,7 @@ import { PERFORMANCE_LEVELS } from '../../services/performanceLevels';
  * Panel de Estudio Detallado con Temarios ICFES
  * Muestra el syllabus completo por nivel con estructura expandible
  */
-export default function StudyPlanPanel({ areaName, currentLevel, currentScore }) {
+export default function StudyPlanPanel({ areaName, currentLevel, currentScore, totalQuestions }) {
     const [expandedSections, setExpandedSections] = useState({});
     const [selectedLevel, setSelectedLevel] = useState(currentLevel);
 
@@ -79,7 +79,7 @@ export default function StudyPlanPanel({ areaName, currentLevel, currentScore })
                     </div>
 
                     <span className={`px-4 py-2 rounded-xl text-sm font-black border ${colors.badge}`}>
-                        {areaConfig.totalQuestions} preguntas
+                        {totalQuestions || areaConfig.totalQuestions || 0} preguntas
                     </span>
                 </div>
 
@@ -120,8 +120,8 @@ export default function StudyPlanPanel({ areaName, currentLevel, currentScore })
                                 key={levelNum}
                                 onClick={() => setSelectedLevel(parseInt(levelNum))}
                                 className={`p-4 rounded-xl border-2 transition-all ${isSelected
-                                        ? `${levelColors.border} bg-gradient-to-br ${levelColors.bg}`
-                                        : 'border-slate-700 bg-slate-800/50 hover:border-slate-600'
+                                    ? `${levelColors.border} bg-gradient-to-br ${levelColors.bg}`
+                                    : 'border-slate-700 bg-slate-800/50 hover:border-slate-600'
                                     }`}
                             >
                                 <div className="flex items-center justify-between mb-2">

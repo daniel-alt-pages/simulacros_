@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Calendar, Save, Download, Sparkles, BookOpen, Clock, AlertCircle, ArrowRight, CheckCircle2 } from 'lucide-react';
 import TimeSlotSelector from '../planning/TimeSlotSelector';
 import { generatePersonalizedPlan, exportPlanToPDF } from '../../services/studyPlanGenerator';
-import { saveStudyPlan, getStudyPlan } from '../../services/firebase';
+// import { saveStudyPlan, getStudyPlan } from '../../services/firebase'; // Removed for local version
 
 export default function StudyPlanner({ user }) {
     const [availability, setAvailability] = useState({});
@@ -11,22 +11,24 @@ export default function StudyPlanner({ user }) {
     const [isGenerating, setIsGenerating] = useState(false);
     const [saveStatus, setSaveStatus] = useState('idle'); // idle, saving, success, error
 
-    // Cargar plan existente al iniciar
+    // Load existing plan from LocalStorage
     useEffect(() => {
         async function loadExistingPlan() {
             if (user?.id) {
                 try {
-                    const saved = await getStudyPlan(user.id);
+                    // Local Storage implementation
+                    const saved = localStorage.getItem(`nucleus_study_plan_${user.id}`);
                     if (saved) {
-                        console.log("Plan recuperado de la nube:", saved);
-                        setGeneratedPlan(saved);
-                        if (saved.availability) {
-                            setAvailability(saved.availability);
+                        const parsedPlan = JSON.parse(saved);
+                        console.log("Plan recuperado de LocalStorage:", parsedPlan);
+                        setGeneratedPlan(parsedPlan);
+                        if (parsedPlan.availability) {
+                            setAvailability(parsedPlan.availability);
                         }
                         setSaveStatus('success');
                     }
                 } catch (error) {
-                    console.error("Error cargando plan:", error);
+                    console.error("Error cargando plan local:", error);
                 }
             }
         }
@@ -56,20 +58,30 @@ export default function StudyPlanner({ user }) {
             setGeneratedPlan(plan);
             setIsGenerating(false);
 
-            // Auto-guardado al generar
+            // Auto-guardado al generar (LocalStorage)
             setSaveStatus('saving');
-            const success = await saveStudyPlan(user.id || 'unknown_student', plan);
-            if (success) setSaveStatus('success');
-            else setSaveStatus('error');
+            try {
+                localStorage.setItem(`nucleus_study_plan_${user.id}`, JSON.stringify(plan));
+                setSaveStatus('success');
+            } catch (e) {
+                console.error("Error saving to localStorage", e);
+                setSaveStatus('error');
+            }
         }, 1500);
     };
 
     const handleSaveToCloud = async () => {
         if (!generatedPlan) return;
         setSaveStatus('saving');
-        const success = await saveStudyPlan(user.id || 'unknown_student', generatedPlan);
-        if (success) setSaveStatus('success');
-        else setSaveStatus('error');
+        // Simulate cloud save with local storage
+        try {
+            localStorage.setItem(`nucleus_study_plan_${user.id}`, JSON.stringify(generatedPlan));
+            setTimeout(() => {
+                setSaveStatus('success');
+            }, 500);
+        } catch (e) {
+            setSaveStatus('error');
+        }
     };
 
     const handleExportPDF = () => {

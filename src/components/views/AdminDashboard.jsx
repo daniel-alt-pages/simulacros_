@@ -9,10 +9,11 @@ import {
     CheckCircle2, Brain, TrendingDown, Zap, BarChart3, PieChart as PieChartIcon,
     Activity, AlertTriangle, Star, Trophy, Sparkles, Crosshair, Hexagon, Layers,
     LayoutDashboard, FileQuestion, Video, Settings, Save, Download, PlayCircle,
-    MoreVertical, Share2, Plus
+    MoreVertical, Share2, Plus, View, LogOut
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { StudentAnalyticsEngine } from '../../services/analyticsEngine';
+import StudentDashboard from './StudentDashboard';
 
 // --- CONFIGURACIÓN VISUAL ---
 const THEME = {
@@ -419,10 +420,44 @@ export default function AdminDashboard({ db }) {
                 </AnimatePresence>
             </main>
 
-            {/* --- STUDENT DETAIL OVERLAY --- */}
+            {/* --- STUDENT IMPERSONATION MODE (SPY MODE) --- */}
             <AnimatePresence>
                 {selectedStudent && (
-                    <StudentDetailOverlay student={selectedStudent} onClose={() => setSelectedStudent(null)} />
+                    <motion.div
+                        initial={{ opacity: 0, y: '100%' }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: '100%' }}
+                        transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                        className="fixed inset-0 z-[100] bg-[#050914] overflow-hidden flex flex-col"
+                    >
+                        {/* Admin Control Bar */}
+                        <div className="h-14 bg-red-600 shadow-lg shadow-red-900/50 flex items-center justify-between px-6 z-[110] flex-shrink-0">
+                            <div className="flex items-center gap-3">
+                                <div className="p-1.5 bg-white/20 rounded-lg">
+                                    <View size={20} className="text-white" />
+                                </div>
+                                <div>
+                                    <h3 className="text-sm font-black text-white uppercase tracking-wider leading-none">Modo Supervisión</h3>
+                                    <p className="text-[10px] font-bold text-red-200">Viendo como: {selectedStudent.name}</p>
+                                </div>
+                            </div>
+                            <button
+                                onClick={() => setSelectedStudent(null)}
+                                className="bg-white text-red-600 hover:bg-red-50 px-4 py-2 rounded-lg text-xs font-black uppercase tracking-wider flex items-center gap-2 transition-all"
+                            >
+                                <LogOut size={16} /> Salir al Admin
+                            </button>
+                        </div>
+
+                        {/* Render Full Student Dashboard */}
+                        <div className="flex-1 overflow-y-auto relative bg-[#0B1121]">
+                            <StudentDashboard
+                                user={{ ...selectedStudent, role: 'student' }}
+                                db={db}
+                                setView={(view) => console.log("Navegación simulada a:", view)}
+                            />
+                        </div>
+                    </motion.div>
                 )}
             </AnimatePresence>
 
@@ -489,16 +524,19 @@ function StudentList({ db, filter, onSelect, ranges }) {
 
     // Filtrado avanzado
     const list = db.students.filter(s => {
-        const term = filter.term.toLowerCase();
-        const matchesTerm = s.name.toLocaleLowerCase().includes(term) || s.id.toString().includes(term);
+        const term = (filter.term || '').toLowerCase();
+        const studentName = (s.name || 'Sin Nombre').toString().toLowerCase();
+        const studentId = (s.id || '').toString();
+
+        const matchesTerm = studentName.includes(term) || studentId.includes(term);
         if (!matchesTerm) return false;
 
         if (filter.range !== 'all') {
             const range = ranges.find(r => r.key === filter.range);
-            if (s.global_score < range.min || s.global_score > range.max) return false;
+            if (range && (s.global_score < range.min || s.global_score > range.max)) return false;
         }
         return true;
-    }).sort((a, b) => b.global_score - a.global_score);
+    }).sort((a, b) => (b.global_score || 0) - (a.global_score || 0));
 
     return (
         <div className="flex-1 overflow-y-auto custom-scrollbar p-2">
@@ -513,20 +551,21 @@ function StudentList({ db, filter, onSelect, ranges }) {
                 </thead>
                 <tbody className="divide-y divide-slate-800/30">
                     {list.map(s => {
-                        const range = ranges.find(r => s.global_score >= r.min && s.global_score <= r.max);
+                        const score = s.global_score || 0;
+                        const range = ranges.find(r => score >= r.min && score <= r.max) || { color: '#64748b' };
                         return (
                             <tr key={s.id} onClick={() => onSelect(s)} className="group hover:bg-slate-800/40 transition-colors cursor-pointer text-xs md:text-sm">
                                 <td className="p-3 pl-4">
                                     <div className="flex items-center gap-3">
                                         <div className="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-xs font-bold text-slate-300 border border-slate-700 group-hover:border-indigo-500 group-hover:text-white transition-colors">
-                                            {s.name.substring(0, 2)}
+                                            {(s.name || '?').substring(0, 2).toUpperCase()}
                                         </div>
-                                        <span className="font-bold text-slate-300 group-hover:text-white truncate max-w-[120px] md:max-w-none">{s.name}</span>
+                                        <span className="font-bold text-slate-300 group-hover:text-white truncate max-w-[120px] md:max-w-none">{s.name || 'Sin Nombre'}</span>
                                     </div>
                                 </td>
                                 <td className="p-3 hidden md:table-cell font-mono text-slate-500 text-[10px]">{s.id}</td>
                                 <td className="p-3 text-center">
-                                    <span className="font-black text-base" style={{ color: range.color }}>{s.global_score}</span>
+                                    <span className="font-black text-base" style={{ color: range.color }}>{score}</span>
                                 </td>
                                 <td className="p-3 pr-4 text-right">
                                     <span className="text-[9px] font-bold px-2 py-1 rounded bg-slate-800 border border-slate-700 text-slate-400 group-hover:bg-indigo-500/20 group-hover:text-indigo-300 group-hover:border-indigo-500/30 transition-all">
