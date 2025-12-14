@@ -55,10 +55,21 @@ export function generatePersonalizedPlan(studentName, scores, availableSlotsMap)
         areas[0].assignedSlots++;
         assignedTotal++;
     }
-    // Si faltan slots (por redondeo), quitar al área más fuerte
-    while (assignedTotal > totalSlots && areas[assignedTotal - 1].assignedSlots > 1) {
-        areas[areas.length - 1].assignedSlots--;
-        assignedTotal--;
+    // Si faltan slots (por redondeo hacia arriba), quitar al área con más slots asignados
+    // Fix: assignedTotal is NOT an index for areas array. We must find a valid area to reduce.
+    while (assignedTotal > totalSlots) {
+        // Find area with most slots that has more than 1 (safety floor)
+        const areaToReduce = areas.reduce((prev, current) => (prev.assignedSlots > current.assignedSlots) ? prev : current, areas[0]);
+
+        if (areaToReduce.assignedSlots > 1) {
+            areaToReduce.assignedSlots--;
+            assignedTotal--;
+        } else {
+            // Edge case: All areas have 1 slot but we still have excess?
+            // Force remove from last area even if it goes to 0 (unlikely given logic but safe)
+            // Or break to prevent infinite loop
+            break;
+        }
     }
 
     // 4. Generar Recursos/Temas Específicos por Área

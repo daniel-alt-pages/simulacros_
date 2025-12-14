@@ -162,7 +162,29 @@ export default function StudentDashboard({ user, db, setView, onShowQuestionModa
         />;
     }
     if (currentPanel === 'halloffame') {
-        return <HallOfFamePanel user={user} allStudents={db?.students || []} onBack={() => setCurrentPanel('home')} />;
+        return <HallOfFamePanel
+            user={user}
+            allStudents={db?.students || []}
+            onBack={() => setCurrentPanel('home')}
+            onViewKiller={(areaKey, question) => {
+                const areaStats = db?.admin_analytics?.[areaKey] || {};
+                const globalStat = areaStats[question.id] || null;
+
+                const statsObject = {
+                    ...question,
+                    label: question.id,
+                    areaName: areaKey,
+                    answer: question.correctAnswer || globalStat?.correct_answer || 'A',
+                    global: globalStat || { correct_rate: 0, total_attempts: 0, distractors: {} },
+                    userStatus: (question.isCorrect || question.status === 'correct') ? 'correct' : 'incorrect',
+                    userSelected: question.value || 'N/A'
+                };
+
+                if (onShowQuestionModal) {
+                    onShowQuestionModal(statsObject);
+                }
+            }}
+        />;
     }
 
     // --- MAIN DASHBOARD (BENTO GRID LAYOUT) ---
@@ -171,25 +193,25 @@ export default function StudentDashboard({ user, db, setView, onShowQuestionModa
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="w-full max-w-[1920px] mx-auto pb-20 px-4 md:px-8 space-y-8"
+            className="w-full max-w-[1920px] mx-auto pb-24 md:pb-20 px-4 sm:px-6 md:px-8 space-y-6 md:space-y-8"
         >
             {/* 1. Header Section */}
-            <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 py-4">
+            <header className="flex flex-col xl:flex-row xl:items-end justify-between gap-4 md:gap-6 py-2 md:py-4">
                 <div>
-                    <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight leading-tight">
-                        <span className="block text-2xl md:text-3xl text-slate-400 font-bold mb-1">Bienvenido de nuevo,</span>
+                    <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight leading-tight">
+                        <span className="block text-xl sm:text-2xl md:text-3xl text-slate-400 font-bold mb-1">Bienvenido de nuevo,</span>
                         {user.name.split(' ')[0]} <span className="text-indigo-500">.</span>
                     </h1>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 w-full xl:w-auto">
                     <button
                         onClick={() => setCurrentPanel('halloffame')}
-                        className="flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/30 text-amber-400 font-bold rounded-xl hover:bg-amber-500/20 hover:scale-105 transition-all"
+                        className="flex-1 xl:flex-none justify-center flex items-center gap-2 px-4 md:px-5 py-2.5 md:py-3 bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/30 text-amber-400 font-bold rounded-xl hover:bg-amber-500/20 hover:scale-105 transition-all active:scale-95"
                     >
                         <Trophy size={18} />
-                        <span className="hidden md:inline">Hall of Fame</span>
+                        <span className="inline">Hall of Fame</span>
                     </button>
-                    <div className="bg-slate-800/80 backdrop-blur border border-slate-700 rounded-xl px-5 py-3 flex items-center gap-3">
+                    <div className="hidden sm:flex bg-slate-800/80 backdrop-blur border border-slate-700 rounded-xl px-5 py-3 items-center gap-3">
                         <Calendar size={18} className="text-slate-400" />
                         <span className="text-slate-200 font-mono font-bold text-sm">SIMULACRO #1</span>
                     </div>
@@ -197,44 +219,45 @@ export default function StudentDashboard({ user, db, setView, onShowQuestionModa
             </header>
 
             {/* 2. Hero Bento Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-6">
 
                 {/* A. Global Score Card (Large) */}
-                <motion.div variants={itemVariants} className="lg:col-span-8 bg-gradient-to-br from-indigo-900 via-indigo-950 to-slate-950 rounded-[2.5rem] p-8 md:p-12 relative overflow-hidden group border border-indigo-500/20 shadow-2xl shadow-indigo-900/20">
-                    <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-600/20 rounded-full blur-[120px] -mr-32 -mt-32 group-hover:bg-indigo-500/30 transition-colors duration-700 pointer-events-none" />
-                    <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-end h-full gap-8">
-                        <div className="space-y-6">
-                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 text-xs font-black uppercase tracking-wider backdrop-blur-md">
+                <motion.div variants={itemVariants} className="lg:col-span-12 xl:col-span-8 bg-gradient-to-br from-indigo-900 via-indigo-950 to-slate-950 rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-10 relative overflow-hidden group border border-indigo-500/20 shadow-2xl shadow-indigo-900/20">
+                    <div className="absolute top-0 right-0 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-indigo-600/20 rounded-full blur-[80px] md:blur-[120px] -mr-32 -mt-32 group-hover:bg-indigo-500/30 transition-colors duration-700 pointer-events-none" />
+                    <div className="relative z-10 flex flex-col md:flex-row justify-between items-center md:items-end h-full gap-8">
+                        <div className="space-y-4 md:space-y-6 w-full text-center md:text-left">
+                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 text-[10px] md:text-xs font-black uppercase tracking-wider backdrop-blur-md">
                                 <Sparkles size={12} /> Resultados Oficiales
                             </div>
                             <div>
-                                <h3 className="text-slate-400 font-bold text-lg mb-2">Puntaje Global</h3>
-                                <div className="flex items-baseline gap-4">
-                                    <span className="text-7xl md:text-9xl font-black text-white tracking-tighter leading-none">
+                                <h3 className="text-slate-400 font-bold text-base md:text-lg mb-2">Puntaje Global</h3>
+                                <div className="flex items-baseline justify-center md:justify-start gap-2 md:gap-4">
+                                    <span className="text-6xl sm:text-7xl md:text-8xl xl:text-9xl font-black text-white tracking-tighter leading-none">
                                         {user.global_score}
                                     </span>
-                                    <span className="text-3xl font-black text-slate-500/50">/500</span>
+                                    <span className="text-xl md:text-3xl font-black text-slate-500/50">/500</span>
                                 </div>
                             </div>
-                            <div className="flex items-center gap-6 pt-4 border-t border-indigo-500/20">
+                            <div className="flex justify-center md:justify-start items-center gap-4 md:gap-6 pt-4 border-t border-indigo-500/20">
                                 <div>
-                                    <div className="text-xs text-slate-400 font-bold uppercase mb-1">Percentil</div>
-                                    <div className="text-xl font-black text-emerald-400">Top 12%</div>
+                                    <div className="text-[10px] md:text-xs text-slate-400 font-bold uppercase mb-1">Percentil</div>
+                                    <div className="text-lg md:text-xl font-black text-emerald-400">Top 12%</div>
                                 </div>
                                 <div className="w-px h-8 bg-indigo-500/20" />
                                 <div>
-                                    <div className="text-xs text-slate-400 font-bold uppercase mb-1">Promedio</div>
-                                    <div className="text-xl font-black text-indigo-300">{analytics.avgScore} pts</div>
+                                    <div className="text-[10px] md:text-xs text-slate-400 font-bold uppercase mb-1">Promedio</div>
+                                    <div className="text-lg md:text-xl font-black text-indigo-300">{analytics.avgScore} pts</div>
                                 </div>
                             </div>
                         </div>
 
-                        {/* Radar Chart Mini */}
-                        <div className="w-full md:w-64 h-48 bg-slate-900/50 rounded-3xl border border-indigo-500/10 p-2 backdrop-blur-sm self-stretch flex items-center justify-center">
+                        {/* Radar Chart Mini - Hidden on very small screens if needed, or scaled */}
+                        <div className="w-full sm:w-64 h-48 sm:h-56 bg-slate-900/50 rounded-3xl border border-indigo-500/10 p-2 backdrop-blur-sm self-center md:self-stretch flex items-center justify-center">
                             <ResponsiveContainer width="100%" height="100%">
-                                <RadarChart data={analytics.radarData}>
+                                <RadarChart data={analytics.radarData} outerRadius="70%">
                                     <PolarGrid stroke="#ffffff10" />
                                     <PolarAngleAxis dataKey="subject" tick={{ fill: '#94a3b8', fontSize: 9, fontWeight: 900 }} />
+                                    <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
                                     <Radar name="Score" dataKey="score" stroke="#818cf8" strokeWidth={2} fill="#818cf8" fillOpacity={0.4} />
                                 </RadarChart>
                             </ResponsiveContainer>
@@ -242,8 +265,8 @@ export default function StudentDashboard({ user, db, setView, onShowQuestionModa
                     </div>
                 </motion.div>
 
-                {/* B. Stats Column (Vertical Stack) */}
-                <div className="lg:col-span-4 grid grid-rows-2 gap-6">
+                {/* B. Stats Column (Vertical Stack on PC, Grid on Tablet) */}
+                <div className="lg:col-span-12 xl:col-span-4 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-1 gap-4 md:gap-6">
                     {/* Top Area */}
                     <motion.div variants={itemVariants} className="bg-slate-900/80 backdrop-blur rounded-[2rem] p-6 border border-slate-800 relative overflow-hidden group hover:border-emerald-500/30 transition-colors">
                         <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -252,9 +275,9 @@ export default function StudentDashboard({ user, db, setView, onShowQuestionModa
                                 <div className="p-3 bg-emerald-500/10 rounded-xl">
                                     <Trophy className="text-emerald-400" size={20} />
                                 </div>
-                                <span className="text-emerald-500 font-bold text-xs uppercase bg-emerald-500/10 px-2 py-1 rounded-lg">Mejor Área</span>
+                                <span className="text-emerald-500 font-bold text-[10px] md:text-xs uppercase bg-emerald-500/10 px-2 py-1 rounded-lg">Mejor Área</span>
                             </div>
-                            <h4 className="text-2xl font-black text-white capitalize mb-1">{analytics.maxArea.name}</h4>
+                            <h4 className="text-xl md:text-2xl font-black text-white capitalize mb-1 truncate">{analytics.maxArea.name}</h4>
                             <p className="text-emerald-400 font-black text-3xl">{analytics.maxArea.score} <span className="text-sm text-slate-500 font-bold">pts</span></p>
                         </div>
                     </motion.div>
@@ -267,25 +290,25 @@ export default function StudentDashboard({ user, db, setView, onShowQuestionModa
                                 <div className="p-3 bg-rose-500/10 rounded-xl">
                                     <Target className="text-rose-400" size={20} />
                                 </div>
-                                <span className="text-rose-500 font-bold text-xs uppercase bg-rose-500/10 px-2 py-1 rounded-lg">A Mejorar</span>
+                                <span className="text-rose-500 font-bold text-[10px] md:text-xs uppercase bg-rose-500/10 px-2 py-1 rounded-lg">A Mejorar</span>
                             </div>
-                            <h4 className="text-2xl font-black text-white capitalize mb-1">{analytics.minArea.name}</h4>
+                            <h4 className="text-xl md:text-2xl font-black text-white capitalize mb-1 truncate">{analytics.minArea.name}</h4>
                             <p className="text-rose-400 font-black text-3xl">{analytics.minArea.score} <span className="text-sm text-slate-500 font-bold">pts</span></p>
                         </div>
                     </motion.div>
                 </div>
             </div>
 
-            {/* 3. Subjects Grid (Horizontal Scroll on Mobile, Grid on Desktop) */}
+            {/* 3. Subjects Grid */}
             <motion.div variants={containerVariants}>
-                <div className="flex items-center justify-between mb-6 px-2">
-                    <h3 className="text-2xl font-black text-white flex items-center gap-3">
-                        <LayoutDashboard className="text-indigo-500" />
+                <div className="flex items-center justify-between mb-4 md:mb-6 px-2">
+                    <h3 className="text-xl md:text-2xl font-black text-white flex items-center gap-3">
+                        <LayoutDashboard className="text-indigo-500" size={24} />
                         Materias
                     </h3>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
                     {Object.entries(user.areas).map(([key, data]) => {
                         const config = AREA_CONFIG[key] || AREA_CONFIG["matematicas"];
                         const Icon = config.icon;
@@ -297,11 +320,11 @@ export default function StudentDashboard({ user, db, setView, onShowQuestionModa
                                 whileHover={{ y: -5, scale: 1.02 }}
                                 whileTap={{ scale: 0.98 }}
                                 onClick={() => handleNavigateToSubject(key, data)}
-                                className="bg-slate-900/60 backdrop-blur border border-slate-800 hover:border-slate-700 p-6 rounded-[2rem] cursor-pointer group relative overflow-hidden transition-all shadow-lg"
+                                className="bg-slate-900/60 backdrop-blur border border-slate-800 hover:border-slate-700 p-5 md:p-6 rounded-[2rem] cursor-pointer group relative overflow-hidden transition-all shadow-lg"
                             >
                                 <div className={`absolute inset-0 bg-gradient-to-br ${config.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
 
-                                <div className="relative z-10 flex flex-col h-full min-h-[180px] justify-between">
+                                <div className="relative z-10 flex flex-col h-full min-h-[160px] md:min-h-[180px] justify-between">
                                     <div className="flex justify-between items-start">
                                         <div className={`p-3 rounded-2xl ${config.bg} ${config.border} border`}>
                                             <Icon size={24} className={config.color} />
@@ -310,12 +333,12 @@ export default function StudentDashboard({ user, db, setView, onShowQuestionModa
                                     </div>
 
                                     <div>
-                                        <h4 className="text-lg font-bold text-white capitalize leading-tight mb-1">{key}</h4>
+                                        <h4 className="text-base md:text-lg font-bold text-white capitalize leading-tight mb-1">{key}</h4>
                                         <div className="flex items-center gap-2">
-                                            <div className="h-1.5 w-16 bg-slate-800 rounded-full overflow-hidden">
+                                            <div className="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden flex-1">
                                                 <div className={`h-full ${config.solid} w-[${(data.score / 100) * 100}%]`} style={{ width: `${data.score}%` }} />
                                             </div>
-                                            <span className="text-xs text-slate-400 font-bold">{data.level_title || 'Nvl 1'}</span>
+                                            <span className="text-xs text-slate-400 font-bold whitespace-nowrap">{data.level_title || 'Nvl 1'}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -325,39 +348,39 @@ export default function StudentDashboard({ user, db, setView, onShowQuestionModa
                 </div>
             </motion.div>
 
-            {/* 4. Advanced Insights Section */}
-            <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-                <div className="xl:col-span-2 space-y-8">
-                    {/* Performance Levels (ICFES) */}
-                    <motion.section variants={itemVariants} className="bg-slate-900/50 border border-slate-800 rounded-[2.5rem] p-8">
-                        <div className="flex items-center gap-3 mb-8">
-                            <BrainCircuit className="text-indigo-400" size={24} />
-                            <h3 className="text-2xl font-black text-white">Niveles de Desempeño</h3>
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {Object.entries(user.areas).map(([areaName, data]) => {
-                                const levelData = getPerformanceLevel(areaName, data.score || 0);
-                                return levelData ? (
-                                    <PerformanceLevelCard
-                                        key={areaName}
-                                        levelData={levelData}
-                                        areaName={areaName}
-                                        currentScore={data.score || 0}
-                                        onViewDetails={() => handleNavigateToSubject(areaName, data)}
-                                    />
-                                ) : null;
-                            })}
-                        </div>
-                    </motion.section>
+            {/* 4. Performance Levels (ICFES) - FULL WIDTH */}
+            <motion.section variants={itemVariants} className="bg-slate-900/50 border border-slate-800 rounded-[2rem] p-6 md:p-8">
+                <div className="flex items-center gap-3 mb-6 md:mb-8">
+                    <BrainCircuit className="text-indigo-400" size={24} />
+                    <h3 className="text-xl md:text-2xl font-black text-white">Niveles de Desempeño</h3>
                 </div>
+                {/* Optimized Grid for 5 items: 1 col mobile, 2 col tablet, 3 col desktop */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                    {Object.entries(user.areas).map(([areaName, data]) => {
+                        const levelData = getPerformanceLevel(areaName, data.score || 0);
+                        return levelData ? (
+                            <PerformanceLevelCard
+                                key={areaName}
+                                levelData={levelData}
+                                areaName={areaName}
+                                currentScore={data.score || 0}
+                                onViewDetails={() => handleNavigateToSubject(areaName, data)}
+                            />
+                        ) : null;
+                    })}
+                </div>
+            </motion.section>
 
-                <div className="space-y-6">
-                    {/* Streak & Consistency */}
-                    <AnalyticsGrid
-                        analytics={analytics}
-                        onStreakClick={() => setShowStreakModal(true)}
-                    />
+            {/* 5. Streak & Consistency - FULL WIDTH */}
+            <div className="w-full">
+                <div className="flex items-center gap-3 mb-6 px-2">
+                    <Zap className="text-amber-400" size={24} />
+                    <h3 className="text-xl md:text-2xl font-black text-white">Hábitos de Estudio</h3>
                 </div>
+                <AnalyticsGrid
+                    analytics={analytics}
+                    onStreakClick={() => setShowStreakModal(true)}
+                />
             </div>
 
             {/* 5. Detailed Reports */}
@@ -367,19 +390,17 @@ export default function StudentDashboard({ user, db, setView, onShowQuestionModa
 
             {/* 6. STUDY PLANS SECTION */}
             <motion.div variants={itemVariants} className="pt-8 border-t border-slate-800">
-                <div className="flex items-center justify-between mb-8">
-                    <div>
-                        <h3 className="text-3xl font-black text-white flex items-center gap-3">
-                            <BookOpen className="text-purple-400" />
-                            Planes de Estudio Personalizados
-                        </h3>
-                        <p className="text-slate-400 mt-2 font-medium">
-                            Rutas de aprendizaje generadas automáticamente según tu nivel actual.
-                        </p>
-                    </div>
+                <div className="mb-8">
+                    <h3 className="text-2xl md:text-3xl font-black text-white flex items-center gap-3">
+                        <BookOpen className="text-purple-400" size={28} />
+                        Planes de Estudio
+                    </h3>
+                    <p className="text-slate-400 mt-2 font-medium text-sm md:text-base">
+                        Rutas generadas según tu nivel actual.
+                    </p>
                 </div>
 
-                <div className="grid grid-cols-1 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {Object.entries(user.areas).map(([areaName, data]) => {
                         const levelData = getPerformanceLevel(areaName, data.score || 0);
                         if (!levelData) return null;

@@ -9,6 +9,7 @@ import AdminDashboard from './components/views/AdminDashboard';
 import StrategicDiagnostic from './components/insights/StrategicDiagnostic';
 import PersonalizedStudyPlan from './components/insights/PersonalizedStudyPlan';
 import { ArrowRight, Check, ArrowUpCircle, ChevronRight, Calculator, BookOpen, Users, FlaskConical, Languages, X } from 'lucide-react';
+import QuestionStatsModal from './components/modals/QuestionStatsModal';
 import { processRealData } from './services/dataService';
 
 // Valid views for navigation validation
@@ -107,24 +108,41 @@ export default function App() {
       const storedUser = localStorage.getItem('nucleus_user_react');
       const storedRole = localStorage.getItem('nucleus_role');
 
-      const role = storedRole ? simpleDecrypt(storedRole) : null;
+      // Helper for robust inline decryption during init
+      const decrypt = (encoded) => {
+        try {
+          return atob(encoded).split('').map((c, i) => String.fromCharCode(c.charCodeAt(0) ^ (i % 5))).join('');
+        } catch (e) { return null; }
+      };
+
+      const role = storedRole ? decrypt(storedRole) : null;
       let userData = null;
 
       if (storedUser) {
-        const decryptedUser = simpleDecrypt(storedUser);
+        const decryptedUser = decrypt(storedUser);
         if (decryptedUser) userData = JSON.parse(decryptedUser);
       }
 
-      if (userData && role === 'student') return userData;
+      // INJECT ROLE TO ENSURE HYDRATION IS CORRECT
+      if (userData && role === 'student') return { ...userData, role: 'student' };
       if (role === 'admin') return { name: 'Administrador Maestro', role: 'admin' };
       return null;
-    } catch { return null; }
+    } catch (e) { return null; }
   });
 
   const [view, setView] = useState(() => {
-    const role = localStorage.getItem('nucleus_role');
-    // const isValidView = Object.values(VALID_VIEWS).includes(role === 'admin' ? 'admin' : 'dashboard');
-    return (role === 'student' || role === 'admin') ? (role === 'admin' ? 'admin' : 'dashboard') : 'login';
+    const encodedRole = localStorage.getItem('nucleus_role');
+    if (!encodedRole) return 'login';
+
+    // Decrypt role for check
+    try {
+      // Re-implement simple logic here or ensure simpleDecrypt is stable. 
+      // Since simpleDecrypt is in scope, we rely on it.
+      const role = atob(encodedRole).split('').map((c, i) => String.fromCharCode(c.charCodeAt(0) ^ (i % 5))).join('');
+      return (role === 'student' || role === 'admin') ? (role === 'admin' ? 'admin' : 'dashboard') : 'login';
+    } catch (e) {
+      return 'login';
+    }
   });
 
   // Load Real JSON Data on Mount
@@ -162,15 +180,9 @@ export default function App() {
   };
 
   // FORCE LOGOUT IF STATE IS INVALID (Fix for empty screen on migration)
-  useEffect(() => {
-    if (!user && view !== 'login') {
-      console.warn("⚠️ Detectado estado inconsistente (Vista sin Usuario). Forzando cierre de sesión...");
-      // Wrap in timeout to avoid synchronous state update in effect warning
-      setTimeout(() => {
-        handleLogout();
-      }, 0);
-    }
-  }, [user, view]);
+  // PREVIOUSLY FORCE LOGOUT IF STATE IS INVALID
+  // Removed to prevent session clearing on page reload.
+  // The UI will handle loading states gracefully.
 
   const handleLogin = async (docInput) => {
     if (!db) return;
@@ -337,11 +349,54 @@ export default function App() {
             setIsCollapsed={setIsSidebarCollapsed}
           />
 
-          <main className={`flex-1 transition-all duration-300 ease-in-out p-6 md:p-10 overflow-y-auto relative z-10 ${isSidebarCollapsed ? 'md:ml-20' : 'md:ml-80'}`}>
+          <main className={`flex-1 transition-all duration-300 ease-in-out p-4 md:p-10 overflow-y-auto relative z-10 pb-28 md:pb-10 ${isSidebarCollapsed ? 'md:ml-20' : 'md:ml-80'} ml-0`}>
             {/* Background Glow effects */}
             <div className="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-[-1]">
-              <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[100px]"></div>
-              <div className="absolute bottom-[-10%] left-[20%] w-[400px] h-[400px] bg-cyan-600/10 rounded-full blur-[100px]"></div>
+              <div className="absolute top-[-10%] right-[-10%] w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-purple-600/10 rounded-full blur-[80px] md:blur-[100px]"></div>
+              <div className="absolute bottom-[-10%] left-[20%] w-[250px] md:w-[400px] h-[250px] md:h-[400px] bg-cyan-600/10 rounded-full blur-[80px] md:blur-[100px]"></div>
+            </div>
+
+            {/* MOBILE BOTTOM NAVIGATION - NATIVE APP DOCK STYLE */}
+            <div className="md:hidden fixed bottom-0 left-0 right-0 z-[100] bg-slate-900/95 backdrop-blur-xl border-t border-slate-700/50 rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.5)] safe-pb">
+              <div className="flex justify-around items-center px-2 py-3 pb-6">
+                <button
+                  onClick={() => handleViewChange('dashboard')}
+                  className={`relative flex flex-col items-center justify-center p-2 px-4 rounded-xl transition-all duration-300 ${view === 'dashboard' ? 'text-indigo-400' : 'text-slate-500 hover:text-slate-300'}`}
+                >
+                  <div className={`absolute -top-3 left-1/2 -translate-x-1/2 w-8 h-1 bg-indigo-500 rounded-b-full shadow-[0_0_10px_rgba(99,102,241,0.5)] transition-all duration-300 ${view === 'dashboard' ? 'opacity-100' : 'opacity-0'}`} />
+                  <ArrowUpCircle size={26} className={`mb-1 transition-transform duration-300 ${view === 'dashboard' ? 'scale-110' : ''}`} weight={view === 'dashboard' ? 'fill' : 'regular'} />
+                  <span className="text-[10px] font-bold tracking-wide">Inicio</span>
+                </button>
+
+                <button
+                  onClick={() => handleViewChange('report')}
+                  className={`relative flex flex-col items-center justify-center p-2 px-4 rounded-xl transition-all duration-300 ${view === 'report' ? 'text-cyan-400' : 'text-slate-500 hover:text-slate-300'}`}
+                >
+                  <div className={`absolute -top-3 left-1/2 -translate-x-1/2 w-8 h-1 bg-cyan-500 rounded-b-full shadow-[0_0_10px_rgba(6,182,212,0.5)] transition-all duration-300 ${view === 'report' ? 'opacity-100' : 'opacity-0'}`} />
+                  <BookOpen size={26} className={`mb-1 transition-transform duration-300 ${view === 'report' ? 'scale-110' : ''}`} />
+                  <span className="text-[10px] font-bold tracking-wide">Reporte</span>
+                </button>
+
+                {/* Admin Button only if admin */}
+                {user.role === 'admin' && (
+                  <button
+                    onClick={() => handleViewChange('admin')}
+                    className={`relative flex flex-col items-center justify-center p-2 px-4 rounded-xl transition-all duration-300 ${view === 'admin' ? 'text-purple-400' : 'text-slate-500 hover:text-slate-300'}`}
+                  >
+                    <div className={`absolute -top-3 left-1/2 -translate-x-1/2 w-8 h-1 bg-purple-500 rounded-b-full shadow-[0_0_10px_rgba(168,85,247,0.5)] transition-all duration-300 ${view === 'admin' ? 'opacity-100' : 'opacity-0'}`} />
+                    <Users size={26} className={`mb-1 transition-transform duration-300 ${view === 'admin' ? 'scale-110' : ''}`} />
+                    <span className="text-[10px] font-bold tracking-wide">Admin</span>
+                  </button>
+                )}
+
+                <button
+                  onClick={handleLogout}
+                  className="relative flex flex-col items-center justify-center p-2 px-4 rounded-xl text-red-400/70 hover:text-red-400 transition-all duration-300"
+                >
+                  <X size={26} className="mb-1" />
+                  <span className="text-[10px] font-bold tracking-wide">Salir</span>
+                </button>
+              </div>
             </div>
 
             {user.role === 'student' && view === 'dashboard' && (
@@ -548,180 +603,10 @@ export default function App() {
             )}
 
             {/* Question Stats Modal - PREMIUM REDESIGN */}
-            {selectedQuestionStats && (
-              <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-fade-in"
-                onClick={() => setSelectedQuestionStats(null)}>
-                <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 w-full max-w-2xl rounded-3xl border border-slate-700/50 shadow-2xl overflow-hidden relative animate-slide-up" onClick={e => e.stopPropagation()}>
-
-                  {/* Decorative gradient orbs */}
-                  <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
-                  <div className="absolute bottom-0 left-0 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl -ml-32 -mb-32"></div>
-
-                  {/* Header */}
-                  <div className="relative p-6 border-b border-slate-700/50 bg-slate-900/80 backdrop-blur-xl">
-                    <div className="flex justify-between items-start">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-2">
-                          <div className="p-2 bg-indigo-500/20 rounded-lg border border-indigo-500/30">
-                            <BrainCircuit size={20} className="text-indigo-400" />
-                          </div>
-                          <div>
-                            <h3 className="text-2xl font-black text-white">{selectedQuestionStats.label}</h3>
-                            <p className="text-slate-400 text-sm font-bold uppercase tracking-wider">{selectedQuestionStats.areaName}</p>
-                          </div>
-                        </div>
-                      </div>
-                      <button
-                        onClick={() => setSelectedQuestionStats(null)}
-                        className="p-2 hover:bg-slate-700/50 rounded-xl text-slate-400 hover:text-white transition-all hover:rotate-90 duration-300"
-                      >
-                        <X size={24} />
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="relative p-8 space-y-6 max-h-[70vh] overflow-y-auto">
-                    {/* 1. Your Result vs Difficulty - Side by Side */}
-                    <div className="grid grid-cols-2 gap-4">
-                      {/* Your Answer */}
-                      <div className={`relative p-6 rounded-2xl border-2 flex flex-col items-center justify-center text-center overflow-hidden group transition-all duration-300 ${selectedQuestionStats.userStatus === 'correct'
-                        ? 'bg-emerald-500/10 border-emerald-500/40 hover:border-emerald-500/60 hover:bg-emerald-500/15'
-                        : 'bg-red-500/10 border-red-500/40 hover:border-red-500/60 hover:bg-red-500/15'
-                        }`}>
-                        <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${selectedQuestionStats.userStatus === 'correct' ? 'bg-emerald-500/5' : 'bg-red-500/5'
-                          }`}></div>
-                        <span className="relative text-xs font-black uppercase tracking-wider mb-3 text-slate-300">Tu Respuesta</span>
-                        <div className={`relative w-16 h-16 rounded-2xl flex items-center justify-center text-2xl font-black mb-2 transition-transform group-hover:scale-110 duration-300 ${selectedQuestionStats.userStatus === 'correct'
-                          ? 'bg-gradient-to-br from-emerald-500 to-emerald-600 text-white shadow-lg shadow-emerald-500/40'
-                          : 'bg-gradient-to-br from-red-500 to-red-600 text-white shadow-lg shadow-red-500/40'
-                          }`}>
-                          {selectedQuestionStats.userStatus === 'correct' ? <Check size={32} /> : selectedQuestionStats.userSelected}
-                        </div>
-                        <span className={`relative text-base font-bold ${selectedQuestionStats.userStatus === 'correct' ? 'text-emerald-400' : 'text-red-400'
-                          }`}>
-                          {selectedQuestionStats.userStatus === 'correct' ? 'Correcta' : 'Incorrecta'}
-                        </span>
-                      </div>
-
-                      {/* Difficulty Gauge */}
-                      <div className="relative p-6 rounded-2xl border-2 border-slate-700/50 bg-slate-800/30 hover:bg-slate-800/50 hover:border-slate-600/50 flex flex-col items-center justify-center text-center transition-all duration-300 group overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                        <span className="relative text-xs font-black uppercase tracking-wider mb-3 text-slate-300">Dificultad Global</span>
-                        <div className="relative w-20 h-20 flex items-center justify-center mb-2">
-                          <svg className="w-full h-full transform -rotate-90">
-                            <circle cx="40" cy="40" r="34" stroke="#1e293b" strokeWidth="8" fill="transparent" />
-                            <circle
-                              cx="40"
-                              cy="40"
-                              r="34"
-                              stroke={selectedQuestionStats.global.correct_rate < 30 ? '#ef4444' : selectedQuestionStats.global.correct_rate < 70 ? '#f59e0b' : '#10b981'}
-                              strokeWidth="8"
-                              fill="transparent"
-                              strokeDasharray={213.628}
-                              strokeDashoffset={213.628 - (213.628 * selectedQuestionStats.global.correct_rate) / 100}
-                              className="transition-all duration-1000 drop-shadow-[0_0_8px_currentColor]"
-                              strokeLinecap="round"
-                            />
-                          </svg>
-                          <span className="absolute text-xl font-black text-white">{selectedQuestionStats.global.correct_rate}%</span>
-                        </div>
-                        <span className={`relative text-sm font-bold px-3 py-1 rounded-full ${selectedQuestionStats.global.correct_rate < 30
-                          ? 'text-red-400 bg-red-500/20'
-                          : selectedQuestionStats.global.correct_rate < 70
-                            ? 'text-amber-400 bg-amber-500/20'
-                            : 'text-emerald-400 bg-emerald-500/20'
-                          }`}>
-                          {selectedQuestionStats.global.correct_rate < 30 ? '🔥 Muy Difícil' : selectedQuestionStats.global.correct_rate < 70 ? '⚡ Moderada' : '✨ Fácil'}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* 2. Detailed Answer Distribution - ALL OPTIONS */}
-                    <div className="bg-slate-800/40 backdrop-blur-sm p-6 rounded-2xl border border-slate-700/50">
-                      <h4 className="text-sm font-black text-slate-300 uppercase tracking-wider mb-5 flex items-center gap-2">
-                        <Users size={18} className="text-cyan-400" />
-                        Distribución de Respuestas del Grupo
-                      </h4>
-                      <div className="space-y-4">
-                        {/* Generate bars for ALL options A, B, C, D */}
-                        {['A', 'B', 'C', 'D'].map((option) => {
-                          const isCorrect = option === selectedQuestionStats.answer;
-                          const isUserChoice = option === selectedQuestionStats.userSelected;
-                          const count = selectedQuestionStats.global.distractors?.[option] || 0;
-                          const totalAttempts = selectedQuestionStats.global.total_attempts || 1;
-                          const percentage = Math.round((count / totalAttempts) * 100);
-
-                          return (
-                            <div key={option} className={`group transition-all duration-300 ${isUserChoice ? 'scale-105' : ''}`}>
-                              <div className="flex justify-between items-center text-sm font-bold mb-2">
-                                <div className="flex items-center gap-2">
-                                  <span className={`w-8 h-8 rounded-lg flex items-center justify-center font-black text-sm ${isCorrect
-                                    ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/30'
-                                    : isUserChoice
-                                      ? 'bg-red-500 text-white shadow-lg shadow-red-500/30'
-                                      : 'bg-slate-700 text-slate-300'
-                                    }`}>
-                                    {option}
-                                  </span>
-                                  <span className={`${isCorrect ? 'text-emerald-400' : isUserChoice ? 'text-red-400' : 'text-slate-400'
-                                    }`}>
-                                    {isCorrect && '✓ Correcta'}
-                                    {!isCorrect && isUserChoice && '✗ Tu elección'}
-                                    {!isCorrect && !isUserChoice && 'Distractor'}
-                                  </span>
-                                </div>
-                                <div className="flex items-center gap-3">
-                                  <span className="text-slate-300 font-mono">{count} estudiantes</span>
-                                  <span className={`font-black text-lg ${isCorrect ? 'text-emerald-400' : isUserChoice ? 'text-red-400' : 'text-slate-400'
-                                    }`}>
-                                    {percentage}%
-                                  </span>
-                                </div>
-                              </div>
-                              <div className="h-3 w-full bg-slate-900/50 rounded-full overflow-hidden border border-slate-700/30">
-                                <div
-                                  className={`h-full rounded-full transition-all duration-1000 ease-out ${isCorrect
-                                    ? 'bg-gradient-to-r from-emerald-500 to-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.6)]'
-                                    : isUserChoice
-                                      ? 'bg-gradient-to-r from-red-500 to-red-400 shadow-[0_0_12px_rgba(239,68,68,0.6)]'
-                                      : 'bg-gradient-to-r from-slate-600 to-slate-500'
-                                    }`}
-                                  style={{ width: `${percentage}%` }}
-                                ></div>
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-
-                      {/* Summary Stats */}
-                      <div className="mt-6 pt-4 border-t border-slate-700/50 flex justify-between text-xs">
-                        <span className="text-slate-400 font-semibold">Total de respuestas: <span className="text-white font-bold">{selectedQuestionStats.global.total_attempts}</span></span>
-                        <span className="text-slate-400 font-semibold">Tasa de acierto: <span className="text-emerald-400 font-bold">{selectedQuestionStats.global.correct_rate}%</span></span>
-                      </div>
-                    </div>
-
-                    {/* 3. AI Analysis Insight */}
-                    <div className="bg-gradient-to-br from-indigo-500/10 to-purple-500/10 p-5 rounded-2xl border border-indigo-500/30 flex gap-4 hover:border-indigo-500/50 transition-all duration-300 group">
-                      <div className="p-3 bg-indigo-500/20 rounded-xl h-fit text-indigo-400 group-hover:scale-110 transition-transform duration-300">
-                        <BrainCircuit size={24} />
-                      </div>
-                      <div className="flex-1">
-                        <h5 className="text-sm font-black text-white mb-2 flex items-center gap-2">
-                          Análisis de NUCLEUS
-                          <span className="text-xs bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded-full font-bold">AI</span>
-                        </h5>
-                        <p className="text-sm text-slate-300 font-medium leading-relaxed">
-                          {generateInsight(selectedQuestionStats.global)}
-                          {selectedQuestionStats.userStatus === 'incorrect' && " 💡 Revisa la justificación teórica en tus apuntes y practica preguntas similares."}
-                        </p>
-                      </div>
-                    </div>
-
-                  </div>
-                </div>
-              </div>
-            )}
+            <QuestionStatsModal
+              stats={selectedQuestionStats}
+              onClose={() => setSelectedQuestionStats(null)}
+            />
 
           </main>
         </div>

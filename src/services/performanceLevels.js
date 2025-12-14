@@ -1040,15 +1040,52 @@ export const PERFORMANCE_LEVELS = {
  * Obtiene el nivel de desempeño para un área y puntaje dado
  */
 export function getPerformanceLevel(areaName, score) {
-    const areaConfig = PERFORMANCE_LEVELS[areaName];
+    if (!areaName) return null;
+
+    // 1. Normalize Area Name
+    const normalizedName = areaName.toLowerCase();
+    const configKey = Object.keys(PERFORMANCE_LEVELS).find(k =>
+        k.toLowerCase() === normalizedName ||
+        PERFORMANCE_LEVELS[k].name.toLowerCase() === normalizedName
+    );
+
+    const areaConfig = PERFORMANCE_LEVELS[configKey];
     if (!areaConfig) return null;
 
-    for (const [levelNum, levelData] of Object.entries(areaConfig.levels)) {
+    const numericScore = parseFloat(score);
+
+    // 2. Find Level
+    // Sort levels to check in order (just in case)
+    const levels = Object.entries(areaConfig.levels).sort((a, b) => Number(a[0]) - Number(b[0]));
+
+    for (const [levelNum, levelData] of levels) {
         const [min, max] = levelData.range;
-        if (score >= min && score <= max) {
+
+        // Standard Range Check
+        if (numericScore >= min && numericScore <= max) {
             return {
                 level: parseInt(levelNum),
                 ...levelData,
+                areaName: areaConfig.name,
+                areaIcon: areaConfig.icon,
+                areaColor: areaConfig.color,
+                totalQuestions: areaConfig.totalQuestions,
+                competencies: areaConfig.competencies
+            };
+        }
+    }
+
+    // 3. Handle Edge Cases (Score > Max Range, e.g. 100+)
+    // If no level matched, checking if score is higher than max of last level
+    const lastLevelEntry = levels[levels.length - 1];
+    if (lastLevelEntry) {
+        const [lastLevelNum, lastLevelData] = lastLevelEntry;
+        const [_, max] = lastLevelData.range;
+
+        if (numericScore > max) {
+            return {
+                level: parseInt(lastLevelNum),
+                ...lastLevelData,
                 areaName: areaConfig.name,
                 areaIcon: areaConfig.icon,
                 areaColor: areaConfig.color,

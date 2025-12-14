@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { LayoutDashboard, BookOpen, UserCog, LogOut, BrainCircuit, ChevronLeft, ChevronRight, Grid3x3 } from 'lucide-react';
+import { LayoutDashboard, BookOpen, UserCog, LogOut, BrainCircuit, ChevronLeft, ChevronRight, Grid3x3, Calendar } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function Sidebar({ user, view, setView, handleLogout, isCollapsed, setIsCollapsed }) {
@@ -67,6 +67,17 @@ export default function Sidebar({ user, view, setView, handleLogout, isCollapsed
                             >
                                 <BookOpen size={22} className={view === 'report' ? "animate-pulse" : ""} />
                                 {!isCollapsed && <span>Análisis Detallado</span>}
+                            </button>
+                            <button
+                                onClick={() => setView('planner')}
+                                className={`w-full flex items-center ${isCollapsed ? 'justify-center' : 'gap-4'} px-5 py-4 rounded-xl font-bold transition-all duration-300 border ${view === 'planner'
+                                    ? 'bg-emerald-600/10 border-emerald-500/50 text-emerald-300 shadow-[0_0_20px_rgba(16,185,129,0.15)]'
+                                    : 'border-transparent text-slate-500 hover:text-slate-200 hover:bg-slate-800/50'
+                                    }`}
+                                title={isCollapsed ? "Plan de Estudio" : ""}
+                            >
+                                <Calendar size={22} className={view === 'planner' ? "animate-pulse" : ""} />
+                                {!isCollapsed && <span>Plan de Estudio</span>}
                             </button>
                         </>
                     ) : (

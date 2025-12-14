@@ -14,6 +14,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { StudentAnalyticsEngine } from '../../services/analyticsEngine';
 import StudentDashboard from './StudentDashboard';
+import QuestionStatsModal from '../modals/QuestionStatsModal';
 
 // --- CONFIGURACIÓN VISUAL ---
 const THEME = {
@@ -47,6 +48,7 @@ export default function AdminDashboard({ db }) {
     const [selectedStudent, setSelectedStudent] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [activeFilter, setActiveFilter] = useState('all');
+    const [selectedQuestionStats, setSelectedQuestionStats] = useState(null);
 
     // Estado local para grabaciones (simulado, se reinicia al recargar)
     const [recordings, setRecordings] = useState([
@@ -455,6 +457,7 @@ export default function AdminDashboard({ db }) {
                                 user={{ ...selectedStudent, role: 'student' }}
                                 db={db}
                                 setView={(view) => console.log("Navegación simulada a:", view)}
+                                onShowQuestionModal={setSelectedQuestionStats}
                             />
                         </div>
                     </motion.div>
@@ -476,6 +479,12 @@ export default function AdminDashboard({ db }) {
                     </motion.div>
                 )}
             </AnimatePresence>
+
+            {/* Question Stats Modal */}
+            <QuestionStatsModal
+                stats={selectedQuestionStats}
+                onClose={() => setSelectedQuestionStats(null)}
+            />
         </div>
     );
 }
@@ -636,7 +645,7 @@ function StudentDetailOverlay({ student, onClose }) {
         >
             <motion.div
                 initial={{ y: 50, scale: 0.98 }} animate={{ y: 0, scale: 1 }} exit={{ y: 50, scale: 0.98 }}
-                className="w-full max-w-5xl bg-[#0f172a] border border-slate-800 rounded-3xl shadow-2xl overflow-hidden relative"
+                className="w-full max-w-[90vw] bg-[#0f172a] border border-slate-800 rounded-3xl shadow-2xl overflow-hidden relative"
             >
                 <button onClick={onClose} className="absolute top-4 right-4 z-50 p-2 rounded-full bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white"><Settings size={20} className="rotate-45" /></button>
 
@@ -677,7 +686,7 @@ function StudentDetailOverlay({ student, onClose }) {
                             </ResponsiveContainer>
                         </div>
 
-                        <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                             {Object.values(student.areas).map(area => (
                                 <div key={area.name} className="bg-slate-900/40 p-4 rounded-xl border border-slate-800 hover:border-indigo-500/40 transition-all flex flex-col justify-between">
                                     <div className="flex justify-between items-start mb-2">

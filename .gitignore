@@ -27,4 +27,22 @@ dist-ssr
 # Environment variables
 .env
 .env.*
-!.env.example
+
+# Local Development Tools
+*.ps1
+scripts/
+docs/
+*.cmd
+*.sh
+
+# System Files
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Vercel / Netlify Local
+.vercel
+.netlify
+
+# Build Output (extra safety)
+build/

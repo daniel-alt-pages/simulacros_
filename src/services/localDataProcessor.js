@@ -10,6 +10,8 @@
  * @version 2.0.0
  */
 
+import logger from '../utils/secureLogger';
+
 // Configuración de archivos CSV
 const CSV_FILES = {
     'matematicas': 'MATEMÁTICAS.csv',
@@ -59,11 +61,11 @@ async function loadAnswerKeys() {
         const response = await fetch('/data/answer_keys.json');
         if (response.ok) {
             LOADED_ANSWER_KEYS = await response.json();
-            console.log('🔑 Claves de respuesta cargadas desde answer_keys.json');
+            logger.log('🔑 Claves de respuesta cargadas desde answer_keys.json');
             return LOADED_ANSWER_KEYS;
         }
     } catch (error) {
-        console.warn('⚠️ No se pudo cargar answer_keys.json:', error);
+        logger.warn('⚠️ No se pudo cargar answer_keys.json:', error);
     }
 
     return null;
@@ -217,11 +219,11 @@ function getPerformanceLevel(areaKey, score) {
  * @param {Array} officialKeys - Array de claves oficiales desde answer_keys.json
  */
 async function processCSVFile(csvText, areaKey, officialKeys = null) {
-    console.log(`📊 Procesando ${areaKey}...`);
+    logger.log(`📊 Procesando ${areaKey}...`);
 
     const data = parseCSV(csvText);
     if (data.length === 0) {
-        console.warn(`⚠️ ${areaKey}: CSV vacío`);
+        logger.warn(`⚠️ ${areaKey}: CSV vacío`);
         return { students: {}, answerKeys: {}, questionCols: [] };
     }
 
@@ -257,7 +259,7 @@ async function processCSVFile(csvText, areaKey, officialKeys = null) {
         return extractNum(a) - extractNum(b);
     });
 
-    console.log(`   ❓ ${questionCols.length} columnas de preguntas detectadas`);
+    logger.log(`   ❓ ${questionCols.length} columnas de preguntas detectadas`);
 
     // Usar claves oficiales del JSON si están disponibles
     let answerKeys = {};
@@ -265,15 +267,15 @@ async function processCSVFile(csvText, areaKey, officialKeys = null) {
         // officialKeys es un objeto { "MATEMÁTICAS [1.]": "A", ... }
         // Usar directamente como answerKeys
         answerKeys = { ...officialKeys };
-        console.log(`   🔑 ${Object.keys(answerKeys).length} claves oficiales cargadas desde JSON`);
+        logger.log(`   🔑 ${Object.keys(answerKeys).length} claves oficiales cargadas desde JSON`);
     } else {
         // Fallback: extraer del CSV
         answerKeys = extractAnswerKeys(data, questionCols);
-        console.log(`   🔑 ${Object.keys(answerKeys).length} claves extraídas del CSV (fallback)`);
+        logger.log(`   🔑 ${Object.keys(answerKeys).length} claves extraídas del CSV (fallback)`);
     }
 
     if (Object.keys(answerKeys).length === 0) {
-        console.warn(`   ⚠️ No se encontraron claves de respuesta en ${areaKey}`);
+        logger.warn(`   ⚠️ No se encontraron claves de respuesta en ${areaKey}`);
     }
 
     const areaName = AREA_DISPLAY_NAMES[areaKey];
@@ -349,22 +351,23 @@ async function processCSVFile(csvText, areaKey, officialKeys = null) {
         };
     }
 
-    console.log(`   ✅ ${Object.keys(studentsData).length} estudiantes procesados`);
+    logger.log(`   ✅ ${Object.keys(studentsData).length} estudiantes procesados`);
     return { students: studentsData, answerKeys, questionCols };
 }
 
 /**
  * Calcula el puntaje global ponderado
+ * Si el área no existe, se asume 0 (Regla del usuario para consistencia)
  */
 function calculateGlobalScore(areaScores) {
     let weightedSum = 0;
     let totalWeight = 0;
 
     for (const [area, weight] of Object.entries(AREA_WEIGHTS)) {
-        if (areaScores[area] !== undefined) {
-            weightedSum += areaScores[area] * weight;
-            totalWeight += weight;
-        }
+        // Se toma 0 si no existe el score
+        const score = areaScores[area] !== undefined ? areaScores[area] : 0;
+        weightedSum += score * weight;
+        totalWeight += weight;
     }
 
     if (totalWeight === 0) return 0;
@@ -375,7 +378,7 @@ function calculateGlobalScore(areaScores) {
  * Genera analytics globales para el panel de admin
  */
 function generateAdminAnalytics(studentsList) {
-    console.log('📊 Generando analytics de administrador...');
+    logger.log('📊 Generando analytics de administrador...');
     const adminAnalytics = {};
 
     for (const areaKey of Object.values(AREA_DISPLAY_NAMES)) {
@@ -424,7 +427,7 @@ function generateAdminAnalytics(studentsList) {
         }
 
         adminAnalytics[areaKey] = questionStats;
-        console.log(`   ✅ ${areaKey}: ${Object.keys(questionStats).length} preguntas analizadas`);
+        logger.log(`   ✅ ${areaKey}: ${Object.keys(questionStats).length} preguntas analizadas`);
     }
 
     return adminAnalytics;
@@ -434,45 +437,93 @@ function generateAdminAnalytics(studentsList) {
  * 🚀 FUNCIÓN PRINCIPAL - Carga y procesa todos los CSVs
  */
 export async function loadLocalCSVData() {
-    console.log('🚀 NUCLEUS Local Data Processor iniciando...');
-    console.log('📂 Cargando CSVs desde /data/...');
+    logger.log('🚀 NUCLEUS Local Data Processor iniciando...');
+    logger.log('📂 Cargando CSVs desde /data/...');
 
     // Cargar claves de respuesta oficiales
     const officialAnswerKeys = await loadAnswerKeys();
 
     const allStudents = {};
     const allAnswerKeys = {};
+    // Maps for robust merging (Fuzzy Matching)
+    const emailToId = {};
+    const nameToId = {};
     const loadedAreas = [];
+
+    // Helper: Normalize string for fuzzy matching (lowercase, no accents, no special chars)
+    const normalizeKey = (str) => {
+        if (!str) return "";
+        return String(str)
+            .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // Remove accents
+            .toLowerCase()
+            .replace(/[^a-z0-9]/g, ""); // Keep only alphanumeric
+    };
 
     for (const [areaKey, filename] of Object.entries(CSV_FILES)) {
         try {
             const response = await fetch(`/data/${filename}`);
-            if (!response.ok) {
-                console.warn(`⚠️ No se pudo cargar ${filename}: ${response.status}`);
-                continue;
-            }
+            if (!response.ok) continue;
 
             const csvText = await response.text();
-
-            // Obtener claves oficiales para esta área (usando column_keys con nombres exactos)
             const areaOfficialKeys = officialAnswerKeys?.[areaKey]?.column_keys || null;
-
             const { students, answerKeys } = await processCSVFile(csvText, areaKey, areaOfficialKeys);
 
-            // Merge students
+            // --- INTELLIGENT MERGING SYSTEM (ID -> Email -> Name) ---
             for (const [id, studentData] of Object.entries(students)) {
-                if (!allStudents[id]) {
-                    allStudents[id] = { ...studentData };
+                // Prepare keys
+                const rawEmail = studentData.email || '';
+                const rawName = studentData.name || '';
+
+                const normEmail = normalizeKey(rawEmail);
+                const normName = normalizeKey(rawName);
+
+                let targetId = id; // Default: trust the current ID
+                let matchMethod = 'ID';
+
+                // CHECK 1: ID Match (Implicit)
+                if (allStudents[id]) {
+                    targetId = id;
+                }
+                // CHECK 2: Email Match
+                else if (normEmail && emailToId[normEmail]) {
+                    targetId = emailToId[normEmail];
+                    matchMethod = 'Email';
+                }
+                // CHECK 3: Name Match (Fallback)
+                else if (normName && nameToId[normName]) {
+                    targetId = nameToId[normName];
+                    matchMethod = 'Nombre';
+                }
+
+                // LOG MERGE ACTION (Only if merging different IDs)
+                if (targetId !== id) {
+                    logger.log(`   🔗 Fusión Inteligente (${matchMethod}): ${id} -> ${targetId}`);
+                }
+
+                // EXECUTE MERGE OR CREATE
+                if (!allStudents[targetId]) {
+                    // --- NEW STUDENT ---
+                    allStudents[targetId] = { ...studentData };
+
+                    // Register Keys
+                    if (normEmail) emailToId[normEmail] = targetId;
+                    if (normName) nameToId[normName] = targetId;
                 } else {
-                    // Merge areas
-                    Object.assign(allStudents[id].areas, studentData.areas);
-                    // Update name/email if empty
-                    if (!allStudents[id].name && studentData.name) {
-                        allStudents[id].name = studentData.name;
-                    }
-                    if (!allStudents[id].email && studentData.email) {
-                        allStudents[id].email = studentData.email;
-                    }
+                    // --- MERGE EXISTING ---
+                    const target = allStudents[targetId];
+
+                    // logger.log(`      Merging ${areaKey} for ${target.name}`); // Debug
+
+                    // Merge Areas
+                    Object.assign(target.areas, studentData.areas);
+
+                    // Enrich Profile (Fill missing info)
+                    if (!target.name && rawName) target.name = rawName;
+                    if (!target.email && rawEmail) target.email = rawEmail;
+
+                    // Update Maps (if this alias wasn't registered yet)
+                    if (normEmail && !emailToId[normEmail]) emailToId[normEmail] = targetId;
+                    if (normName && !nameToId[normName]) nameToId[normName] = targetId;
                 }
             }
 
@@ -480,8 +531,32 @@ export async function loadLocalCSVData() {
             loadedAreas.push(areaKey);
 
         } catch (error) {
-            console.error(`❌ Error procesando ${filename}:`, error);
+            logger.error(`❌ Error procesando ${filename}:`, error);
         }
+    }
+
+    // --- FILL MISSING AREAS (ZERO POLICY) ---
+    // Ensure every student has all 5 areas present. If missing, fill with 0/Absent.
+    const ALL_AREAS = Object.values(AREA_DISPLAY_NAMES);
+    for (const student of Object.values(allStudents)) {
+        if (!student.areas) student.areas = {};
+
+        ALL_AREAS.forEach(areaName => {
+            if (!student.areas[areaName]) {
+                student.areas[areaName] = {
+                    name: areaName,
+                    score: 0,
+                    errors: 0,
+                    correct_count: 0,
+                    maxStreak: 0,
+                    question_details: [],
+                    level: 0, // 0 indicates "No Presentó"
+                    total_questions: 0,
+                    percentage: 0,
+                    absent: true // Flag for UI
+                };
+            }
+        });
     }
 
     // Convertir a array y calcular puntajes globales
@@ -505,12 +580,12 @@ export async function loadLocalCSVData() {
     // Ordenar por puntaje global
     studentsList.sort((a, b) => b.global_score - a.global_score);
 
-    // Generar analytics (allAnswerKeys se pasa por referencia futura)
+    // Generar analytics
     const adminAnalytics = generateAdminAnalytics(studentsList);
 
-    console.log('✅ Procesamiento completado!');
-    console.log(`   📊 ${studentsList.length} estudiantes consolidados`);
-    console.log(`   📚 ${loadedAreas.length} áreas cargadas: ${loadedAreas.join(', ')}`);
+    logger.log('✅ Procesamiento completado!');
+    logger.log(`   📊 ${studentsList.length} estudiantes consolidados`);
+    logger.log(`   📚 ${loadedAreas.length} áreas cargadas: ${loadedAreas.join(', ')}`);
 
     return {
         students: studentsList,
@@ -525,6 +600,7 @@ export async function loadLocalCSVData() {
         answer_keys: allAnswerKeys
     };
 }
+
 
 /**
  * Exporta los datos procesados como JSON para backup

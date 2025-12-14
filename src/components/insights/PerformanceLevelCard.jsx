@@ -6,7 +6,7 @@ import { Award, Target, CheckCircle2, Sparkles } from 'lucide-react';
  * Muestra el nivel actual del estudiante, su progreso dentro del nivel
  * y las competencias que domina.
  */
-export default function PerformanceLevelCard({ areaName, currentScore, levelData, onViewDetails }) {
+export default function PerformanceLevelCard({ currentScore, levelData, onViewDetails }) {
     if (!levelData) return null;
 
     const colorClasses = {
@@ -59,13 +59,13 @@ export default function PerformanceLevelCard({ areaName, currentScore, levelData
         <div className={`relative bg-gradient-to-br ${colors.bg} backdrop-blur-sm rounded-2xl border ${colors.border} p-6 ${colors.glow} transition-all duration-300 hover:scale-[1.02] premium-card`}>
 
             {/* Header con nivel y badge */}
-            <div className="flex items-start justify-between mb-4">
-                <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                        <div className={`p-2 rounded-xl ${colors.badge} border`}>
+            <div className="flex items-start justify-between gap-4 mb-4">
+                <div className="flex-1 min-w-0">
+                    <div className="flex items-start gap-3 mb-2">
+                        <div className={`mt-1 p-2 rounded-xl ${colors.badge} border flex-shrink-0`}>
                             <Award size={20} />
                         </div>
-                        <h4 className={`text-lg font-black ${colors.text} tracking-tight`}>
+                        <h4 className={`text-lg font-black ${colors.text} leading-tight break-words`}>
                             {levelData.title}
                         </h4>
                     </div>
@@ -73,14 +73,14 @@ export default function PerformanceLevelCard({ areaName, currentScore, levelData
                         {levelData.description}
                     </p>
                 </div>
-                <div className="flex flex-col items-end gap-2 ml-4">
-                    <span className={`px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest border ${colors.badge}`}>
+                <div className="flex flex-col items-end gap-2 flex-shrink-0">
+                    <span className={`px-3 py-1 rounded-full text-[10px] md:text-xs font-black uppercase tracking-widest border text-center whitespace-nowrap ${colors.badge}`}>
                         {levelData.badge}
                     </span>
                     {onViewDetails && (
                         <button
                             onClick={onViewDetails}
-                            className={`text-[10px] font-bold uppercase tracking-wider ${colors.text} hover:opacity-80 transition-opacity flex items-center gap-1 bg-white/5 px-2 py-1 rounded-md`}
+                            className={`text-[10px] font-bold uppercase tracking-wider ${colors.text} hover:opacity-80 transition-opacity flex items-center gap-1 bg-white/5 px-2 py-1 rounded-md whitespace-nowrap`}
                         >
                             Ver Detalle <Target size={10} />
                         </button>
