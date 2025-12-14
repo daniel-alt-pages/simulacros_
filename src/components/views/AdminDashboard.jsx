@@ -6,7 +6,7 @@ import {
 } from 'recharts';
 import {
     Users, TrendingUp, Award, Target, Search, Filter, BookOpen, AlertCircle,
-    CheckCircle2, Brain, TrendingDown, Zap, BarChart3, PieChart as PieChartIcon,
+    CheckCircle2, Brain, TrendingDown, Zap,
     Activity, AlertTriangle, Star, Trophy, Sparkles, Crosshair, Hexagon, Layers,
     LayoutDashboard, FileQuestion, Video, Settings, Save, Download, PlayCircle,
     MoreVertical, Share2, Plus, View, LogOut
@@ -191,11 +191,11 @@ export default function AdminDashboard({ db }) {
                 </div>
             </div>
 
-            <main className="max-w-[1920px] mx-auto p-4 md:p-8">
+            <main className="max-w-[1440px] mx-auto p-4">
                 <AnimatePresence mode='wait'>
                     {/* --- TAB: OVERVIEW --- */}
                     {activeTab === 'overview' && (
-                        <motion.div key="overview" initial="hidden" animate="visible" variants={variants} className="space-y-8">
+                        <motion.div key="overview" initial="hidden" animate="visible" variants={variants} className="space-y-4">
                             {/* KPI ROW */}
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                                 <KPICard label="Estudiantes" value={stats.total} icon={Users} color="blue" />
@@ -204,22 +204,22 @@ export default function AdminDashboard({ db }) {
                                 <KPICard label="Tendencia" value="+12%" icon={TrendingUp} color="emerald" />
                             </div>
 
-                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                                 {/* Control Tower List */}
-                                <div className="lg:col-span-2 bg-slate-900/60 border border-slate-800 rounded-3xl overflow-hidden backdrop-blur-sm flex flex-col h-[600px] shadow-2xl">
-                                    <div className="p-4 border-b border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4 bg-slate-900/80">
+                                <div className="lg:col-span-2 bg-slate-900/60 border border-slate-800 rounded-2xl overflow-hidden backdrop-blur-sm flex flex-col h-[500px] shadow-xl">
+                                    <div className="p-3 border-b border-slate-800 flex flex-col md:flex-row justify-between items-center gap-3 bg-slate-900/80">
                                         <div className="relative w-full md:w-64">
                                             <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
                                             <input
                                                 type="text" placeholder="Buscar alumno..."
                                                 value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
-                                                className="w-full bg-slate-950 border border-slate-700 rounded-lg pl-9 pr-3 py-2 text-xs text-white focus:border-indigo-500 outline-none transition-colors"
+                                                className="w-full bg-slate-950 border border-slate-700 rounded-lg pl-9 pr-3 py-1.5 text-xs text-white focus:border-indigo-500 outline-none transition-colors"
                                             />
                                         </div>
                                         <div className="flex gap-2 w-full md:w-auto overflow-x-auto">
                                             {SCORE_RANGES.map(r => (
-                                                <button key={r.key} onClick={() => setActiveFilter(r.key === activeFilter ? 'all' : r.key)} className={`px-3 py-1.5 rounded text-[10px] uppercase font-bold border transition-all ${activeFilter === r.key ? 'bg-slate-800 text-white border-white/50' : 'bg-transparent text-slate-500 border-slate-800 hover:border-slate-600'}`}>
-                                                    <span className={`w-2 h-2 rounded-full inline-block mr-1`} style={{ backgroundColor: r.color }}></span> {r.label}
+                                                <button key={r.key} onClick={() => setActiveFilter(r.key === activeFilter ? 'all' : r.key)} className={`px-2 py-1 rounded text-[9px] uppercase font-bold border transition-all ${activeFilter === r.key ? 'bg-slate-800 text-white border-white/50' : 'bg-transparent text-slate-500 border-slate-800 hover:border-slate-600'}`}>
+                                                    <span className={`w-1.5 h-1.5 rounded-full inline-block mr-1`} style={{ backgroundColor: r.color }}></span> {r.label}
                                                 </button>
                                             ))}
                                         </div>
@@ -228,29 +228,29 @@ export default function AdminDashboard({ db }) {
                                 </div>
 
                                 {/* Right Charts */}
-                                <div className="flex flex-col gap-6">
-                                    <div className="bg-slate-900/60 border border-slate-800 rounded-3xl p-6 flex-1 shadow-lg">
-                                        <h3 className="font-bold text-white mb-4 flex items-center gap-2 text-sm uppercase tracking-wider">
-                                            <PieChartIcon size={16} className="text-cyan-400" /> Distribución
+                                <div className="flex flex-col gap-4">
+                                    <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-4 flex-1 shadow-lg">
+                                        <h3 className="font-bold text-white mb-2 flex items-center gap-2 text-xs uppercase tracking-wider">
+                                            <Activity size={14} className="text-cyan-400" /> Distribución
                                         </h3>
-                                        <div className="h-48">
+                                        <div className="h-40">
                                             <ResponsiveContainer>
                                                 <BarChart data={stats.distribution} layout="vertical" margin={{ left: 0 }}>
                                                     <XAxis type="number" hide />
-                                                    <YAxis dataKey="name" type="category" width={80} tick={{ fill: '#64748b', fontSize: 10, fontWeight: 700 }} />
+                                                    <YAxis dataKey="name" type="category" width={70} tick={{ fill: '#64748b', fontSize: 9, fontWeight: 700 }} />
                                                     <Tooltip cursor={{ fill: 'transparent' }} contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '8px', fontSize: '12px' }} />
-                                                    <Bar dataKey="value" barSize={20} radius={[0, 4, 4, 0]}>
+                                                    <Bar dataKey="value" barSize={16} radius={[0, 4, 4, 0]}>
                                                         {stats.distribution.map((e, i) => <Cell key={i} fill={e.color} />)}
                                                     </Bar>
                                                 </BarChart>
                                             </ResponsiveContainer>
                                         </div>
                                     </div>
-                                    <div className="bg-slate-900/60 border border-slate-800 rounded-3xl p-6 flex-1 shadow-lg">
-                                        <h3 className="font-bold text-white mb-4 flex items-center gap-2 text-sm uppercase tracking-wider">
-                                            <Target size={16} className="text-fuchsia-400" /> Rendimiento Área
+                                    <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-4 flex-1 shadow-lg">
+                                        <h3 className="font-bold text-white mb-2 flex items-center gap-2 text-xs uppercase tracking-wider">
+                                            <Target size={14} className="text-fuchsia-400" /> Rendimiento Área
                                         </h3>
-                                        <div className="h-48">
+                                        <div className="h-40">
                                             <ResponsiveContainer>
                                                 <RadarChart cx="50%" cy="50%" outerRadius="70%" data={stats.subjectAverages}>
                                                     <PolarGrid stroke="#334155" />
@@ -423,6 +423,7 @@ export default function AdminDashboard({ db }) {
             </main>
 
             {/* --- STUDENT IMPERSONATION MODE (SPY MODE) --- */}
+            {/* --- STUDENT IMPERSONATION MODE (SPY MODE) --- */}
             <AnimatePresence>
                 {selectedStudent && (
                     <motion.div
@@ -430,7 +431,7 @@ export default function AdminDashboard({ db }) {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: '100%' }}
                         transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                        className="fixed inset-0 z-[100] bg-[#050914] overflow-hidden flex flex-col"
+                        className="fixed inset-0 z-[200] bg-[#050914] overflow-hidden flex flex-col"
                     >
                         {/* Admin Control Bar */}
                         <div className="h-14 bg-red-600 shadow-lg shadow-red-900/50 flex items-center justify-between px-6 z-[110] flex-shrink-0">
@@ -440,7 +441,7 @@ export default function AdminDashboard({ db }) {
                                 </div>
                                 <div>
                                     <h3 className="text-sm font-black text-white uppercase tracking-wider leading-none">Modo Supervisión</h3>
-                                    <p className="text-[10px] font-bold text-red-200">Viendo como: {selectedStudent.name}</p>
+                                    <p className="text-center text-[10px] font-bold text-red-200">Viendo como: {selectedStudent.name}</p>
                                 </div>
                             </div>
                             <button
@@ -587,132 +588,5 @@ function StudentList({ db, filter, onSelect, ranges }) {
                 </tbody>
             </table>
         </div>
-    );
-}
-
-// --- STUDENT DETAIL OVERLAY (Self-Contained) ---
-function StudentDetailOverlay({ student, onClose }) {
-    const analytics = useMemo(() => {
-        if (!student || !student.areas) {
-            return {
-                stats: { consistencyScore: 0 },
-                streak: { currentStreak: 0, nemesis: null },
-                risk: {}
-            };
-        }
-
-        const qDetails = Object.values(student.areas)
-            .flatMap(a => a.question_details || [])
-            .filter(q => q && q.id); // Filter out invalid questions
-
-        if (qDetails.length === 0 || typeof StudentAnalyticsEngine === 'undefined') {
-            console.warn("No question details or Analytics Engine missing");
-            return {
-                stats: { consistencyScore: 0 },
-                streak: { currentStreak: 0, nemesis: null },
-                risk: {}
-            };
-        }
-
-        try {
-            const engine = new StudentAnalyticsEngine(qDetails);
-            return {
-                stats: engine.getPerformanceStats() || { consistencyScore: 0 },
-                streak: engine.getStreakAnalysis() || { currentStreak: 0, nemesis: null },
-                // risk: engine.getConsistencyAnalysis() || {} // Función no existe en el engine
-                risk: {} // Placeholder hasta implementar la función
-            };
-        } catch (error) {
-            console.error("Analytics Engine error:", error);
-            return {
-                stats: { consistencyScore: 0 },
-                streak: { currentStreak: 0, nemesis: null },
-                risk: {}
-            };
-        }
-    }, [student]);
-
-    const radarData = Object.values(student.areas || {}).map(a => ({
-        subject: a.name || 'Sin nombre',
-        A: a.score || 0,
-        fullMark: 100
-    }));
-
-    return (
-        <motion.div
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] bg-slate-950/90 backdrop-blur-xl flex justify-center items-start overflow-y-auto px-4 py-8 custom-scrollbar"
-        >
-            <motion.div
-                initial={{ y: 50, scale: 0.98 }} animate={{ y: 0, scale: 1 }} exit={{ y: 50, scale: 0.98 }}
-                className="w-full max-w-[90vw] bg-[#0f172a] border border-slate-800 rounded-3xl shadow-2xl overflow-hidden relative"
-            >
-                <button onClick={onClose} className="absolute top-4 right-4 z-50 p-2 rounded-full bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white"><Settings size={20} className="rotate-45" /></button>
-
-                <div className="p-6 md:p-10">
-                    <div className="flex flex-col md:flex-row gap-6 items-center mb-8">
-                        <div className="w-20 h-20 rounded-2xl bg-indigo-600 shadow-xl shadow-indigo-500/20 flex items-center justify-center text-3xl font-black text-white shrink-0">
-                            {(student.name || 'XX').substring(0, 2).toUpperCase()}
-                        </div>
-                        <div className="text-center md:text-left">
-                            <h2 className="text-2xl md:text-3xl font-black text-white mb-1">{student.name || 'Estudiante Sin Nombre'}</h2>
-                            <p className="text-slate-400 font-mono text-xs">ID: {student.id || 'N/A'}</p>
-                            {analytics?.streak?.nemesis && (
-                                <div className="mt-2 inline-flex items-center gap-1 px-2 py-0.5 rounded bg-red-500/10 text-red-400 text-[10px] font-bold border border-red-500/20">
-                                    <AlertTriangle size={10} /> Riesgo: {analytics.streak.nemesis.name}
-                                </div>
-                            )}
-                        </div>
-                        <div className="ml-auto w-full md:w-auto p-4 bg-slate-900/50 rounded-xl border border-slate-800 flex justify-between md:block">
-                            <div className="text-right">
-                                <p className="text-[10px] font-bold text-slate-500 uppercase">SCORE GLOBAL</p>
-                                <div className="text-4xl font-black text-white leading-none">{student.global_score || 0}</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Radar & Stats Grid */}
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <div className="h-[280px] bg-slate-900/50 rounded-2xl border border-slate-800 p-2 md:p-4 relative">
-                            <p className="absolute top-4 left-4 text-xs font-bold text-slate-500 uppercase flex items-center gap-1"><Activity size={12} /> Competencias</p>
-                            <ResponsiveContainer>
-                                <RadarChart cx="50%" cy="54%" outerRadius="65%" data={radarData}>
-                                    <PolarGrid stroke="#334155" />
-                                    <PolarAngleAxis dataKey="subject" tick={{ fill: '#64748b', fontSize: 9, fontWeight: 700 }} />
-                                    <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
-                                    <Radar name="Student" dataKey="A" stroke="#818cf8" strokeWidth={3} fill="#818cf8" fillOpacity={0.4} />
-                                    <Tooltip contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', fontSize: '12px' }} />
-                                </RadarChart>
-                            </ResponsiveContainer>
-                        </div>
-
-                        <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                            {Object.values(student.areas).map(area => (
-                                <div key={area.name} className="bg-slate-900/40 p-4 rounded-xl border border-slate-800 hover:border-indigo-500/40 transition-all flex flex-col justify-between">
-                                    <div className="flex justify-between items-start mb-2">
-                                        <h4 className="font-bold text-slate-200 capitalize text-sm">{area.name}</h4>
-                                        <span className={`font-black text-lg ${area.score >= 70 ? 'text-emerald-400' : area.score >= 50 ? 'text-amber-400' : 'text-red-400'}`}>{area.score}</span>
-                                    </div>
-                                    <div className="space-y-2">
-
-                                        <div className="flex flex-wrap gap-1.5">
-                                            <span className="px-1.5 py-0.5 rounded bg-slate-950 text-[9px] font-bold text-slate-400 border border-slate-700">{area.level_title}</span>
-                                            {area.maxStreak > 2 && <span className="px-1.5 py-0.5 rounded bg-orange-500/10 text-[9px] font-bold text-orange-400 border border-orange-500/20">🔥 {area.maxStreak}</span>}
-                                            <span className="px-1.5 py-0.5 rounded bg-slate-950 text-[9px] font-bold text-slate-500">Err: {area.errors}</span>
-                                        </div>
-
-                                        {area.evidences?.slice(0, 2).map((ev, i) => (
-                                            <p key={i} className="text-[10px] text-slate-500 truncate flex items-center gap-1">
-                                                <div className="w-1 h-1 rounded-full bg-emerald-500 shrink-0" /> {ev}
-                                            </p>
-                                        ))}
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-            </motion.div>
-        </motion.div>
     );
 }

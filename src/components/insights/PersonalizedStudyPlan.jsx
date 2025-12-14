@@ -1,8 +1,11 @@
-import React, { useMemo } from 'react';
-import { BookOpen, Clock, Target, TrendingUp, Lightbulb } from 'lucide-react';
+import React, { useMemo, useState } from 'react';
+import { BookOpen, Clock, Target, TrendingUp, Lightbulb, Download, Loader2 } from 'lucide-react';
 import { classifyGlobalScore, getStrategicPlan, identifyWeakCompetencies } from '../../services/classificationService';
+import { exportDetailedAnalysisPDF } from '../../services/detailedReportPDF';
 
 export default function PersonalizedStudyPlan({ user }) {
+    const [isDownloading, setIsDownloading] = useState(false);
+
     const studyPlan = useMemo(() => {
         const globalScore = user.global_score || 0;
         const classification = classifyGlobalScore(globalScore);
@@ -24,6 +27,23 @@ export default function PersonalizedStudyPlan({ user }) {
         return severity === 'CRITICAL' ? 'text-red-400 bg-red-500/10 border-red-500/30' :
             severity === 'HIGH' ? 'text-amber-400 bg-amber-500/10 border-amber-500/30' :
                 'text-blue-400 bg-blue-500/10 border-blue-500/30';
+    };
+
+    // Función para descargar el PDF completo del análisis detallado
+    const handleDownloadPDF = async () => {
+        if (!user) return;
+
+        setIsDownloading(true);
+        try {
+            // Pequeña pausa para mostrar feedback visual
+            await new Promise(resolve => setTimeout(resolve, 500));
+            exportDetailedAnalysisPDF(user);
+        } catch (error) {
+            console.error('Error al generar PDF:', error);
+            alert('Hubo un error al generar el PDF. Por favor, intenta de nuevo.');
+        } finally {
+            setIsDownloading(false);
+        }
     };
 
     return (
@@ -163,9 +183,34 @@ export default function PersonalizedStudyPlan({ user }) {
 
                 {/* Action Button */}
                 <div className="mt-8 text-center">
-                    <button className="px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-black rounded-xl transition-all shadow-lg shadow-indigo-900/40 hover:shadow-indigo-600/40 transform hover:scale-105 active:scale-95">
-                        📅 Descargar Plan de Estudio Completo (PDF)
+                    <button
+                        onClick={handleDownloadPDF}
+                        disabled={isDownloading}
+                        className={`
+                            flex items-center justify-center gap-3 mx-auto
+                            px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 
+                            hover:from-indigo-500 hover:to-purple-500 
+                            text-white font-black rounded-xl transition-all 
+                            shadow-lg shadow-indigo-900/40 hover:shadow-indigo-600/40 
+                            transform hover:scale-105 active:scale-95
+                            disabled:opacity-70 disabled:cursor-wait disabled:transform-none
+                        `}
+                    >
+                        {isDownloading ? (
+                            <>
+                                <Loader2 size={20} className="animate-spin" />
+                                Generando PDF Profesional...
+                            </>
+                        ) : (
+                            <>
+                                <Download size={20} />
+                                📄 Descargar Plan de Estudio Completo (PDF)
+                            </>
+                        )}
                     </button>
+                    <p className="text-slate-500 text-xs mt-3">
+                        Incluye análisis completo, competencias por área, syllabus y recomendaciones
+                    </p>
                 </div>
             </div>
         </div>

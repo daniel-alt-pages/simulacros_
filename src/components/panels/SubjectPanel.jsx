@@ -276,8 +276,8 @@ function QuestionsGrid({ questions, config, onQuestionClick }) {
                             whileTap={{ scale: 0.9 }}
                             onClick={() => onQuestionClick?.(q)}
                             className={`relative aspect-square rounded-2xl flex items-center justify-center font-black text-lg transition-all group ${isCorrect
-                                    ? 'bg-slate-800 border-2 border-emerald-500/30 hover:border-emerald-500 hover:shadow-[0_0_20px_rgba(16,185,129,0.3)]'
-                                    : 'bg-slate-800 border-2 border-red-500/30 hover:border-red-500 hover:shadow-[0_0_20px_rgba(239,68,68,0.3)]'
+                                ? 'bg-slate-800 border-2 border-emerald-500/30 hover:border-emerald-500 hover:shadow-[0_0_20px_rgba(16,185,129,0.3)]'
+                                : 'bg-slate-800 border-2 border-red-500/30 hover:border-red-500 hover:shadow-[0_0_20px_rgba(239,68,68,0.3)]'
                                 }`}
                         >
                             {/* Inner Glow */}
@@ -297,7 +297,7 @@ function QuestionsGrid({ questions, config, onQuestionClick }) {
             </div>
 
             {/* Quick Stats Footer */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
                 <div className="bg-slate-800/40 border border-slate-700/50 p-6 rounded-2xl flex items-center gap-4">
                     <div className="p-3 bg-emerald-500/10 rounded-xl border border-emerald-500/20">
                         <CheckCircle2 className="text-emerald-400" size={24} />

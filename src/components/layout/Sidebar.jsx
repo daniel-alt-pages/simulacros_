@@ -14,7 +14,7 @@ export default function Sidebar({ user, view, setView, handleLogout, isCollapsed
         <motion.aside
             initial={false}
             animate={{ width: isCollapsed ? 80 : 320 }}
-            className="bg-slate-900/95 backdrop-blur-xl text-slate-300 flex-shrink-0 h-screen sticky top-0 md:fixed z-30 flex flex-col justify-between border-r border-slate-800 shadow-[5px_0_30px_rgba(0,0,0,0.3)] hidden md:flex"
+            className="bg-slate-900/95 backdrop-blur-xl text-slate-300 flex-shrink-0 h-screen sticky top-0 md:fixed z-20 flex flex-col justify-between border-r border-slate-800 shadow-[5px_0_30px_rgba(0,0,0,0.3)] hidden md:flex"
         >
             {/* Toggle Button */}
             <button

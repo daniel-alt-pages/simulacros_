@@ -193,70 +193,70 @@ export default function StudentDashboard({ user, db, setView, onShowQuestionModa
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="w-full max-w-[1920px] mx-auto pb-24 md:pb-20 px-4 sm:px-6 md:px-8 space-y-6 md:space-y-8"
+            className="w-full max-w-[1440px] mx-auto pb-10 px-4 sm:px-6 space-y-4"
         >
             {/* 1. Header Section */}
-            <header className="flex flex-col xl:flex-row xl:items-end justify-between gap-4 md:gap-6 py-2 md:py-4">
+            <header className="flex flex-col xl:flex-row xl:items-end justify-between gap-4 py-2">
                 <div>
-                    <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight leading-tight">
-                        <span className="block text-xl sm:text-2xl md:text-3xl text-slate-400 font-bold mb-1">Bienvenido de nuevo,</span>
+                    <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white tracking-tight leading-tight">
+                        <span className="block text-lg sm:text-xl text-slate-400 font-bold mb-0.5">Bienvenido de nuevo,</span>
                         {user.name.split(' ')[0]} <span className="text-indigo-500">.</span>
                     </h1>
                 </div>
                 <div className="flex items-center gap-3 w-full xl:w-auto">
                     <button
                         onClick={() => setCurrentPanel('halloffame')}
-                        className="flex-1 xl:flex-none justify-center flex items-center gap-2 px-4 md:px-5 py-2.5 md:py-3 bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/30 text-amber-400 font-bold rounded-xl hover:bg-amber-500/20 hover:scale-105 transition-all active:scale-95"
+                        className="flex-1 xl:flex-none justify-center flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/30 text-amber-400 font-bold rounded-xl hover:bg-amber-500/20 hover:scale-105 transition-all active:scale-95 text-sm"
                     >
-                        <Trophy size={18} />
+                        <Trophy size={16} />
                         <span className="inline">Hall of Fame</span>
                     </button>
-                    <div className="hidden sm:flex bg-slate-800/80 backdrop-blur border border-slate-700 rounded-xl px-5 py-3 items-center gap-3">
-                        <Calendar size={18} className="text-slate-400" />
-                        <span className="text-slate-200 font-mono font-bold text-sm">SIMULACRO #1</span>
+                    <div className="hidden sm:flex bg-slate-800/80 backdrop-blur border border-slate-700 rounded-xl px-4 py-2 items-center gap-2">
+                        <Calendar size={16} className="text-slate-400" />
+                        <span className="text-slate-200 font-mono font-bold text-xs">SIMULACRO #1</span>
                     </div>
                 </div>
             </header>
 
             {/* 2. Hero Bento Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
 
                 {/* A. Global Score Card (Large) */}
-                <motion.div variants={itemVariants} className="lg:col-span-12 xl:col-span-8 bg-gradient-to-br from-indigo-900 via-indigo-950 to-slate-950 rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-10 relative overflow-hidden group border border-indigo-500/20 shadow-2xl shadow-indigo-900/20">
-                    <div className="absolute top-0 right-0 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-indigo-600/20 rounded-full blur-[80px] md:blur-[120px] -mr-32 -mt-32 group-hover:bg-indigo-500/30 transition-colors duration-700 pointer-events-none" />
-                    <div className="relative z-10 flex flex-col md:flex-row justify-between items-center md:items-end h-full gap-8">
-                        <div className="space-y-4 md:space-y-6 w-full text-center md:text-left">
-                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 text-[10px] md:text-xs font-black uppercase tracking-wider backdrop-blur-md">
-                                <Sparkles size={12} /> Resultados Oficiales
+                <motion.div variants={itemVariants} className="lg:col-span-12 xl:col-span-8 bg-gradient-to-br from-indigo-900 via-indigo-950 to-slate-950 rounded-3xl p-6 relative overflow-hidden group border border-indigo-500/20 shadow-2xl shadow-indigo-900/20">
+                    <div className="absolute top-0 right-0 w-[200px] md:w-[300px] h-[200px] md:h-[300px] bg-indigo-600/20 rounded-full blur-[60px] md:blur-[100px] -mr-20 -mt-20 group-hover:bg-indigo-500/30 transition-colors duration-700 pointer-events-none" />
+                    <div className="relative z-10 flex flex-col md:flex-row justify-between items-center md:items-end h-full gap-6">
+                        <div className="space-y-4 w-full text-center md:text-left">
+                            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 text-[9px] md:text-[10px] font-black uppercase tracking-wider backdrop-blur-md">
+                                <Sparkles size={10} /> Resultados Oficiales
                             </div>
                             <div>
-                                <h3 className="text-slate-400 font-bold text-base md:text-lg mb-2">Puntaje Global</h3>
-                                <div className="flex items-baseline justify-center md:justify-start gap-2 md:gap-4">
-                                    <span className="text-6xl sm:text-7xl md:text-8xl xl:text-9xl font-black text-white tracking-tighter leading-none">
+                                <h3 className="text-slate-400 font-bold text-sm md:text-base mb-1">Puntaje Global</h3>
+                                <div className="flex items-baseline justify-center md:justify-start gap-2">
+                                    <span className="text-5xl sm:text-6xl xl:text-7xl font-black text-white tracking-tighter leading-none">
                                         {user.global_score}
                                     </span>
-                                    <span className="text-xl md:text-3xl font-black text-slate-500/50">/500</span>
+                                    <span className="text-lg md:text-2xl font-black text-slate-500/50">/500</span>
                                 </div>
                             </div>
-                            <div className="flex justify-center md:justify-start items-center gap-4 md:gap-6 pt-4 border-t border-indigo-500/20">
+                            <div className="flex justify-center md:justify-start items-center gap-4 pt-4 border-t border-indigo-500/20">
                                 <div>
-                                    <div className="text-[10px] md:text-xs text-slate-400 font-bold uppercase mb-1">Percentil</div>
-                                    <div className="text-lg md:text-xl font-black text-emerald-400">Top 12%</div>
+                                    <div className="text-[9px] text-slate-400 font-bold uppercase mb-0.5">Percentil</div>
+                                    <div className="text-base md:text-lg font-black text-emerald-400">Top 12%</div>
                                 </div>
-                                <div className="w-px h-8 bg-indigo-500/20" />
+                                <div className="w-px h-6 bg-indigo-500/20" />
                                 <div>
-                                    <div className="text-[10px] md:text-xs text-slate-400 font-bold uppercase mb-1">Promedio</div>
-                                    <div className="text-lg md:text-xl font-black text-indigo-300">{analytics.avgScore} pts</div>
+                                    <div className="text-[9px] text-slate-400 font-bold uppercase mb-0.5">Promedio</div>
+                                    <div className="text-base md:text-lg font-black text-indigo-300">{analytics.avgScore} pts</div>
                                 </div>
                             </div>
                         </div>
 
                         {/* Radar Chart Mini - Hidden on very small screens if needed, or scaled */}
-                        <div className="w-full sm:w-64 h-48 sm:h-56 bg-slate-900/50 rounded-3xl border border-indigo-500/10 p-2 backdrop-blur-sm self-center md:self-stretch flex items-center justify-center">
+                        <div className="w-full sm:w-56 h-40 sm:h-48 bg-slate-900/50 rounded-2xl border border-indigo-500/10 p-2 backdrop-blur-sm self-center md:self-stretch flex items-center justify-center">
                             <ResponsiveContainer width="100%" height="100%">
                                 <RadarChart data={analytics.radarData} outerRadius="70%">
                                     <PolarGrid stroke="#ffffff10" />
-                                    <PolarAngleAxis dataKey="subject" tick={{ fill: '#94a3b8', fontSize: 9, fontWeight: 900 }} />
+                                    <PolarAngleAxis dataKey="subject" tick={{ fill: '#94a3b8', fontSize: 8, fontWeight: 900 }} />
                                     <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
                                     <Radar name="Score" dataKey="score" stroke="#818cf8" strokeWidth={2} fill="#818cf8" fillOpacity={0.4} />
                                 </RadarChart>

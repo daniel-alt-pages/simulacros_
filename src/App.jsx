@@ -8,7 +8,7 @@ import StudyPlanner from './components/views/StudyPlanner';
 import AdminDashboard from './components/views/AdminDashboard';
 import StrategicDiagnostic from './components/insights/StrategicDiagnostic';
 import PersonalizedStudyPlan from './components/insights/PersonalizedStudyPlan';
-import { ArrowRight, Check, ArrowUpCircle, ChevronRight, Calculator, BookOpen, Users, FlaskConical, Languages, X } from 'lucide-react';
+import { ArrowRight, Check, ArrowUpCircle, ChevronRight, Calculator, BookOpen, Users, FlaskConical, Languages, X, Calendar, LogOut } from 'lucide-react';
 import QuestionStatsModal from './components/modals/QuestionStatsModal';
 import { processRealData } from './services/dataService';
 
@@ -308,9 +308,18 @@ export default function App() {
   };
 
   // Sidebar State
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true); // Default collapsed for cleaner look
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(window.innerWidth < 1280);
 
-  // ... (handleLogin, handleLogout, handleViewChange remain same)
+  // Auto-collapse on smaller screens
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 1280) setIsSidebarCollapsed(true);
+      else setIsSidebarCollapsed(false);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   if (!db && view !== 'login') return (
     // ... (loading state remains same - condensed for brevity in replacement)
@@ -377,6 +386,15 @@ export default function App() {
                   <span className="text-[10px] font-bold tracking-wide">Reporte</span>
                 </button>
 
+                <button
+                  onClick={() => handleViewChange('planner')}
+                  className={`relative flex flex-col items-center justify-center p-2 px-4 rounded-xl transition-all duration-300 ${view === 'planner' ? 'text-emerald-400' : 'text-slate-500 hover:text-slate-300'}`}
+                >
+                  <div className={`absolute -top-3 left-1/2 -translate-x-1/2 w-8 h-1 bg-emerald-500 rounded-b-full shadow-[0_0_10px_rgba(16,185,129,0.5)] transition-all duration-300 ${view === 'planner' ? 'opacity-100' : 'opacity-0'}`} />
+                  <Calendar size={26} className={`mb-1 transition-transform duration-300 ${view === 'planner' ? 'scale-110' : ''}`} />
+                  <span className="text-[10px] font-bold tracking-wide">Plan</span>
+                </button>
+
                 {/* Admin Button only if admin */}
                 {user.role === 'admin' && (
                   <button
@@ -393,221 +411,225 @@ export default function App() {
                   onClick={handleLogout}
                   className="relative flex flex-col items-center justify-center p-2 px-4 rounded-xl text-red-400/70 hover:text-red-400 transition-all duration-300"
                 >
-                  <X size={26} className="mb-1" />
+                  <LogOut size={26} className="mb-1" />
                   <span className="text-[10px] font-bold tracking-wide">Salir</span>
                 </button>
               </div>
             </div>
 
-            {user.role === 'student' && view === 'dashboard' && (
-              <StudentDashboard
-                user={user}
-                db={db}
-                setView={handleViewChange}
-                onShowQuestionModal={setSelectedQuestionStats}
-              />
-            )}
+            {/* MAIN CONTENT WRAPPER - MAX WIDTH CONSTRAINT */}
+            <div className="max-w-[1600px] mx-auto w-full">
 
-            {user.role === 'student' && view === 'planner' && (
-              <div className="animate-slide-up">
-                <button onClick={() => handleViewChange('dashboard')} className="group flex items-center text-slate-400 hover:text-indigo-400 transition-colors font-bold mb-8 bg-slate-800/50 hover:bg-slate-800 border border-slate-700/50 px-6 py-3 rounded-xl backdrop-blur-md">
-                  <ArrowRight className="rotate-180 mr-2" size={20} />
-                  Volver al Dashboard
-                </button>
-                <StudyPlanner user={user} />
-              </div>
-            )}
+              {user.role === 'student' && view === 'dashboard' && (
+                <StudentDashboard
+                  user={user}
+                  db={db}
+                  setView={handleViewChange}
+                  onShowQuestionModal={setSelectedQuestionStats}
+                />
+              )}
 
-            {user.role === 'student' && view === 'report' && (
-              <div className="max-w-6xl mx-auto animate-slide-up">
-                <button onClick={() => handleViewChange('dashboard')} className="group flex items-center text-slate-400 hover:text-cyan-400 transition-colors font-bold mb-8 bg-slate-800/50 hover:bg-slate-800 border border-slate-700/50 px-6 py-3 rounded-xl backdrop-blur-md">
-                  <ArrowRight className="rotate-180 mr-2" size={20} />
-                  Volver al Dashboard
-                </button>
+              {user.role === 'student' && view === 'planner' && (
+                <div className="animate-slide-up">
+                  <button onClick={() => handleViewChange('dashboard')} className="group flex items-center text-slate-400 hover:text-indigo-400 transition-colors font-bold mb-8 bg-slate-800/50 hover:bg-slate-800 border border-slate-700/50 px-6 py-3 rounded-xl backdrop-blur-md">
+                    <ArrowRight className="rotate-180 mr-2" size={20} />
+                    Volver al Dashboard
+                  </button>
+                  <StudyPlanner user={user} />
+                </div>
+              )}
 
-                <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 border border-slate-700 rounded-3xl shadow-2xl p-10 mb-10 text-white relative overflow-hidden group">
-                  <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/20 rounded-full -mr-32 -mt-32 blur-3xl group-hover:bg-indigo-500/30 transition-all duration-700"></div>
-                  <div className="relative z-10 flex flex-col md:flex-row justify-between items-center gap-8">
-                    <div>
-                      <span className="inline-block px-4 py-2 bg-indigo-500/10 border border-indigo-500/30 backdrop-blur-sm rounded-full text-indigo-300 text-sm font-bold tracking-wider mb-4">INFORME OFICIAL</span>
-                      <h1 className="text-4xl md:text-6xl font-black mb-3 bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">{db?.metadata?.test_name || 'NUCLEUS Analytics'}</h1>
-                      <p className="text-slate-400 font-semibold text-lg">Generado por Nucleus Engine v3.0</p>
-                    </div>
-                    <div className="bg-slate-800/50 backdrop-blur-xl text-white p-8 rounded-2xl text-center min-w-[200px] shadow-2xl border border-slate-700 relative">
-                      <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-purple-500/10 rounded-2xl"></div>
-                      <span className="relative z-10 text-6xl font-black tracking-tighter text-indigo-400">{user.global_score || 0}</span>
-                      <span className="relative z-10 block text-sm text-slate-400 font-bold uppercase mt-2">Puntaje Global</span>
+              {user.role === 'student' && view === 'report' && (
+                <div className="max-w-6xl mx-auto animate-slide-up">
+                  <button onClick={() => handleViewChange('dashboard')} className="group flex items-center text-slate-400 hover:text-cyan-400 transition-colors font-bold mb-8 bg-slate-800/50 hover:bg-slate-800 border border-slate-700/50 px-6 py-3 rounded-xl backdrop-blur-md">
+                    <ArrowRight className="rotate-180 mr-2" size={20} />
+                    Volver al Dashboard
+                  </button>
+
+                  <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 border border-slate-700 rounded-3xl shadow-2xl p-10 mb-10 text-white relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/20 rounded-full -mr-32 -mt-32 blur-3xl group-hover:bg-indigo-500/30 transition-all duration-700"></div>
+                    <div className="relative z-10 flex flex-col md:flex-row justify-between items-center gap-8">
+                      <div>
+                        <span className="inline-block px-4 py-2 bg-indigo-500/10 border border-indigo-500/30 backdrop-blur-sm rounded-full text-indigo-300 text-sm font-bold tracking-wider mb-4">INFORME OFICIAL</span>
+                        <h1 className="text-4xl md:text-6xl font-black mb-3 bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">{db?.metadata?.test_name || 'NUCLEUS Analytics'}</h1>
+                        <p className="text-slate-400 font-semibold text-lg">Generado por Nucleus Engine v3.0</p>
+                      </div>
+                      <div className="bg-slate-800/50 backdrop-blur-xl text-white p-8 rounded-2xl text-center min-w-[200px] shadow-2xl border border-slate-700 relative">
+                        <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-purple-500/10 rounded-2xl"></div>
+                        <span className="relative z-10 text-6xl font-black tracking-tighter text-indigo-400">{user.global_score || 0}</span>
+                        <span className="relative z-10 block text-sm text-slate-400 font-bold uppercase mt-2">Puntaje Global</span>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Strategic Diagnostic Section */}
-                <StrategicDiagnostic user={user} db={db} />
+                  {/* Strategic Diagnostic Section */}
+                  <StrategicDiagnostic user={user} db={db} />
 
-                {/* Personalized Study Plan */}
-                <PersonalizedStudyPlan user={user} />
+                  {/* Personalized Study Plan */}
+                  <PersonalizedStudyPlan user={user} />
 
-                <div className="space-y-8">
-                  {user.areas && Object.entries(user.areas).map(([areaName, data]) => {
-                    // Defensive validation
-                    if (!data || typeof data !== 'object') {
-                      console.warn(`⚠️ Invalid data for area: ${areaName}`);
-                      return null;
-                    }
+                  <div className="space-y-8">
+                    {user.areas && Object.entries(user.areas).map(([areaName, data]) => {
+                      // Defensive validation
+                      if (!data || typeof data !== 'object') {
+                        console.warn(`⚠️ Invalid data for area: ${areaName}`);
+                        return null;
+                      }
 
-                    const config = AREA_CONFIG[areaName] || AREA_CONFIG["matematicas"];
-                    const Icon = config.icon;
+                      const config = AREA_CONFIG[areaName] || AREA_CONFIG["matematicas"];
+                      const Icon = config.icon;
 
-                    // Ensure evidence and recommended_plan exist
-                    const evidences = data.evidences || data.evidence || [];
-                    const recommendedPlan = data.recommended_plan || [];
+                      // Ensure evidence and recommended_plan exist
+                      const evidences = data.evidences || data.evidence || [];
+                      const recommendedPlan = data.recommended_plan || [];
 
-                    return (
-                      <div key={areaName} className="bg-slate-900/80 backdrop-blur-md rounded-3xl shadow-xl border border-slate-800 overflow-hidden hover:shadow-2xl hover:border-slate-600 transition-all group">
-                        <div className={`bg-gradient-to-r ${config.gradient} p-[1px] relative`}>
-                          <div className="absolute inset-0 bg-white/20"></div>
-                          <div className="bg-slate-900 p-6 text-white relative z-10">
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-4">
-                                <div className={`p-3 bg-${config.color.split('-')[1]}-500/10 rounded-xl border border-${config.color.split('-')[1]}-500/20`}>
-                                  <Icon size={28} className={config.color} />
+                      return (
+                        <div key={areaName} className="bg-slate-900/80 backdrop-blur-md rounded-3xl shadow-xl border border-slate-800 overflow-hidden hover:shadow-2xl hover:border-slate-600 transition-all group">
+                          <div className={`bg-gradient-to-r ${config.gradient} p-[1px] relative`}>
+                            <div className="absolute inset-0 bg-white/20"></div>
+                            <div className="bg-slate-900 p-6 text-white relative z-10">
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-4">
+                                  <div className={`p-3 bg-${config.color.split('-')[1]}-500/10 rounded-xl border border-${config.color.split('-')[1]}-500/20`}>
+                                    <Icon size={28} className={config.color} />
+                                  </div>
+                                  <div>
+                                    <h4 className="text-2xl font-black capitalize text-slate-100">{areaName}</h4>
+                                    <p className={`font-semibold ${config.color}`}>{data.level_title || `Nivel ${data.level || 1}`}</p>
+                                  </div>
                                 </div>
-                                <div>
-                                  <h4 className="text-2xl font-black capitalize text-slate-100">{areaName}</h4>
-                                  <p className={`font-semibold ${config.color}`}>{data.level_title || `Nivel ${data.level || 1}`}</p>
-                                </div>
+                                <div className="text-5xl font-black text-white drop-shadow-lg">{data.score || 0}</div>
+                                <div className="text-sm font-bold text-white/60 tracking-wider">PUNTAJE</div>
                               </div>
-                              <div className="text-5xl font-black text-white drop-shadow-lg">{data.score || 0}</div>
-                              <div className="text-sm font-bold text-white/60 tracking-wider">PUNTAJE</div>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="p-8">
-                          <div className="grid md:grid-cols-2 gap-8">
-                            <div>
-                              <h5 className="text-sm font-black text-slate-500 uppercase tracking-wider mb-4 flex items-center gap-2">
-                                <Check size={16} className="text-emerald-500" /> Fortalezas Demostradas
-                              </h5>
-                              {evidences.length > 0 ? (
-                                <ul className="space-y-3">
-                                  {evidences.map((e, i) => (
-                                    <li key={i} className="flex items-start text-slate-300 font-medium">
-                                      <span className="w-2 h-2 bg-emerald-500 rounded-full mt-2 mr-3 flex-shrink-0 shadow-[0_0_10px_rgba(16,185,129,0.5)]"></span> {e}
-                                    </li>
-                                  ))}
-                                </ul>
-                              ) : (
-                                <p className="text-slate-400 text-sm">Continúa practicando para desarrollar tus fortalezas.</p>
-                              )}
-                            </div>
-                            <div className="bg-slate-800/50 p-6 rounded-2xl border border-slate-700/50">
-                              <h5 className="text-sm font-black text-slate-500 uppercase tracking-wider mb-4 flex items-center gap-2">
-                                <ArrowUpCircle size={16} className="text-indigo-500" /> Plan de Mejora
-                              </h5>
-                              {recommendedPlan.length > 0 ? (
-                                <ul className="space-y-3">
-                                  {recommendedPlan.map((p, i) => (
-                                    <li key={i} className="flex items-start text-slate-300 font-semibold">
-                                      <ChevronRight className="w-5 h-5 text-indigo-500 mr-2 mt-0.5 flex-shrink-0" />
-                                      {p}
-                                    </li>
-                                  ))}
-                                </ul>
-                              ) : (
-                                <p className="text-slate-400 text-sm">Sigue fortaleciendo tus conocimientos en esta área.</p>
-                              )}
                             </div>
                           </div>
 
-                          {/* Desglose de Preguntas (Question Matrix) */}
-                          {data.question_details && data.question_details.length > 0 && (
-                            <div className="mt-8 pt-8 border-t border-slate-700/50">
-                              <h5 className="text-sm font-black text-slate-500 uppercase tracking-wider mb-4 flex items-center gap-2">
-                                <BookOpen size={16} className={config.color} /> Desglose de Respuestas
-                              </h5>
-                              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3">
-                                {data.question_details.map((q) => {
-                                  // Get global stats for this question from admin_analytics
-                                  // admin_analytics structure: { "matematicas": { "P1": {...}, "P2": {...} } }
-                                  const areaStats = db?.admin_analytics?.[areaName] || {};
-                                  const globalStat = areaStats[q.id] || null;
-                                  const successRate = globalStat ? globalStat.correct_rate : 0;
+                          <div className="p-8">
+                            <div className="grid md:grid-cols-2 gap-8">
+                              <div>
+                                <h5 className="text-sm font-black text-slate-500 uppercase tracking-wider mb-4 flex items-center gap-2">
+                                  <Check size={16} className="text-emerald-500" /> Fortalezas Demostradas
+                                </h5>
+                                {evidences.length > 0 ? (
+                                  <ul className="space-y-3">
+                                    {evidences.map((e, i) => (
+                                      <li key={i} className="flex items-start text-slate-300 font-medium">
+                                        <span className="w-2 h-2 bg-emerald-500 rounded-full mt-2 mr-3 flex-shrink-0 shadow-[0_0_10px_rgba(16,185,129,0.5)]"></span> {e}
+                                      </li>
+                                    ))}
+                                  </ul>
+                                ) : (
+                                  <p className="text-slate-400 text-sm">Continúa practicando para desarrollar tus fortalezas.</p>
+                                )}
+                              </div>
+                              <div className="bg-slate-800/50 p-6 rounded-2xl border border-slate-700/50">
+                                <h5 className="text-sm font-black text-slate-500 uppercase tracking-wider mb-4 flex items-center gap-2">
+                                  <ArrowUpCircle size={16} className="text-indigo-500" /> Plan de Mejora
+                                </h5>
+                                {recommendedPlan.length > 0 ? (
+                                  <ul className="space-y-3">
+                                    {recommendedPlan.map((p, i) => (
+                                      <li key={i} className="flex items-start text-slate-300 font-semibold">
+                                        <ChevronRight className="w-5 h-5 text-indigo-500 mr-2 mt-0.5 flex-shrink-0" />
+                                        {p}
+                                      </li>
+                                    ))}
+                                  </ul>
+                                ) : (
+                                  <p className="text-slate-400 text-sm">Sigue fortaleciendo tus conocimientos en esta área.</p>
+                                )}
+                              </div>
+                            </div>
 
-                                  return (
-                                    <div
-                                      key={q.id}
-                                      onClick={() => {
-                                        setSelectedQuestionStats({
-                                          ...q,
-                                          label: q.id,
-                                          areaName,
-                                          answer: q.correctAnswer || globalStat?.correct_answer || 'A',
-                                          global: globalStat || { correct_rate: 0, total_attempts: 0, distractors: {} },
-                                          userStatus: q.isCorrect ? 'correct' : 'incorrect',
-                                          userSelected: q.value || 'N/A'
-                                        });
-                                      }}
-                                      className={`relative group p-3 rounded-xl border transition-all cursor-pointer flex flex-col justify-between h-24 hover:scale-[1.03] hover:shadow-lg ${q.isCorrect
-                                        ? 'bg-slate-900/40 border-slate-700 hover:border-emerald-500/50 hover:bg-slate-800'
-                                        : 'bg-slate-900/40 border-slate-700 hover:border-red-500/50 hover:bg-slate-800'
-                                        }`}
-                                    >
-                                      <div className="flex justify-between items-start w-full mb-1">
-                                        <span className="text-xs font-bold text-slate-400">{q.id}</span>
-                                        <div className={`w-2 h-2 rounded-full ${q.isCorrect ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]' : 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)]'}`}></div>
-                                      </div>
+                            {/* Desglose de Preguntas (Question Matrix) */}
+                            {data.question_details && data.question_details.length > 0 && (
+                              <div className="mt-8 pt-8 border-t border-slate-700/50">
+                                <h5 className="text-sm font-black text-slate-500 uppercase tracking-wider mb-4 flex items-center gap-2">
+                                  <BookOpen size={16} className={config.color} /> Desglose de Respuestas
+                                </h5>
+                                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                                  {data.question_details.map((q) => {
+                                    // Get global stats for this question from admin_analytics
+                                    // admin_analytics structure: { "matematicas": { "P1": {...}, "P2": {...} } }
+                                    const areaStats = db?.admin_analytics?.[areaName] || {};
+                                    const globalStat = areaStats[q.id] || null;
+                                    const successRate = globalStat ? globalStat.correct_rate : 0;
 
-                                      <div className="flex items-end justify-between w-full">
-                                        <div className="flex flex-col">
-                                          <span className="text-[10px] text-slate-500 uppercase font-bold tracking-wider mb-0.5">Global</span>
-                                          <div className="flex items-center gap-1">
-                                            <div className="w-12 h-1 bg-slate-700 rounded-full overflow-hidden">
-                                              <div
-                                                className={`h-full rounded-full ${successRate > 70 ? 'bg-emerald-400' : successRate < 40 ? 'bg-red-400' : 'bg-amber-400'}`}
-                                                style={{ width: `${successRate}%` }}
-                                              ></div>
-                                            </div>
-                                            <span className={`text-[10px] font-bold ${successRate > 70 ? 'text-emerald-400' : successRate < 40 ? 'text-red-400' : 'text-amber-400'}`}>
-                                              {successRate}%
-                                            </span>
-                                          </div>
+                                    return (
+                                      <div
+                                        key={q.id}
+                                        onClick={() => {
+                                          setSelectedQuestionStats({
+                                            ...q,
+                                            label: q.id,
+                                            areaName,
+                                            answer: q.correctAnswer || globalStat?.correct_answer || 'A',
+                                            global: globalStat || { correct_rate: 0, total_attempts: 0, distractors: {} },
+                                            userStatus: q.isCorrect ? 'correct' : 'incorrect',
+                                            userSelected: q.value || 'N/A'
+                                          });
+                                        }}
+                                        className={`relative group p-3 rounded-xl border transition-all cursor-pointer flex flex-col justify-between h-24 hover:scale-[1.03] hover:shadow-lg ${q.isCorrect
+                                          ? 'bg-slate-900/40 border-slate-700 hover:border-emerald-500/50 hover:bg-slate-800'
+                                          : 'bg-slate-900/40 border-slate-700 hover:border-red-500/50 hover:bg-slate-800'
+                                          }`}
+                                      >
+                                        <div className="flex justify-between items-start w-full mb-1">
+                                          <span className="text-xs font-bold text-slate-400">{q.id}</span>
+                                          <div className={`w-2 h-2 rounded-full ${q.isCorrect ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]' : 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)]'}`}></div>
                                         </div>
 
-                                        {q.status === 'incorrect' && (
-                                          <div className="flex flex-col items-end">
-                                            <span className="text-[10px] text-slate-500">Marcaste</span>
-                                            <span className="text-sm font-black text-red-400 font-mono">{q.selected}</span>
+                                        <div className="flex items-end justify-between w-full">
+                                          <div className="flex flex-col">
+                                            <span className="text-[10px] text-slate-500 uppercase font-bold tracking-wider mb-0.5">Global</span>
+                                            <div className="flex items-center gap-1">
+                                              <div className="w-12 h-1 bg-slate-700 rounded-full overflow-hidden">
+                                                <div
+                                                  className={`h-full rounded-full ${successRate > 70 ? 'bg-emerald-400' : successRate < 40 ? 'bg-red-400' : 'bg-amber-400'}`}
+                                                  style={{ width: `${successRate}%` }}
+                                                ></div>
+                                              </div>
+                                              <span className={`text-[10px] font-bold ${successRate > 70 ? 'text-emerald-400' : successRate < 40 ? 'text-red-400' : 'text-amber-400'}`}>
+                                                {successRate}%
+                                              </span>
+                                            </div>
                                           </div>
-                                        )}
-                                        {q.status === 'correct' && (
-                                          <Check size={16} className="text-emerald-500/50" />
-                                        )}
+
+                                          {q.status === 'incorrect' && (
+                                            <div className="flex flex-col items-end">
+                                              <span className="text-[10px] text-slate-500">Marcaste</span>
+                                              <span className="text-sm font-black text-red-400 font-mono">{q.selected}</span>
+                                            </div>
+                                          )}
+                                          {q.status === 'correct' && (
+                                            <Check size={16} className="text-emerald-500/50" />
+                                          )}
+                                        </div>
                                       </div>
-                                    </div>
-                                  )
-                                })}
+                                    )
+                                  })}
+                                </div>
                               </div>
-                            </div>
-                          )}
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    )
-                  })}
+                      )
+                    })}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            {user.role === 'admin' && (
-              <AdminDashboard db={db} />
-            )}
+              {user.role === 'admin' && (
+                <AdminDashboard db={db} />
+              )}
 
-            {/* Question Stats Modal - PREMIUM REDESIGN */}
-            <QuestionStatsModal
-              stats={selectedQuestionStats}
-              onClose={() => setSelectedQuestionStats(null)}
-            />
+              {/* Question Stats Modal - PREMIUM REDESIGN */}
+              <QuestionStatsModal
+                stats={selectedQuestionStats}
+                onClose={() => setSelectedQuestionStats(null)}
+              />
 
+            </div>
           </main>
         </div>
       )}
